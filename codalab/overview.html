@@ -1,15 +1,26 @@
 <h1>MetaDL Challenge</h1>
 <h3>Brought to you by ChaLearn and Microsoft</h3>
-<p>The competition is divided into 3 phases: Public, Development and Final. For
-    each of these phases, the data used is different. For instance, in the Public
-    phase, the Omniglot dataset is provided to let you familiarize with the 
-    challenge API.
+<p>This challenge aims to find meta-learning approaches effective in the 
+    few-shot learning setting for image classification tasks.
 </p>
-<p>Follow the instructions in <a href="https://github.com/ebadrian/metadl">the dedicated GitHub repository</a>
-    to get started.
-</p> 
+
+<p>The competition is divided into 2 phases: Feedback and Final. 
+    In Feedback Phase, the participant can develop their own approach, make 
+    submissions and check out the performance on the leaderboard.
+    In Final Phase, the last valid submission during Feedback Phase is 
+    blind-tested on an unseen meta-dataset.
+    During an offline Public Phase, the Omniglot dataset 
+    (to be downloaded in the Get Data section) is provided to allow
+    participants to familiarize with the challenge API.
+</p>
 <p>
     Participants need to train a meta-learner on a meta-train set and produce 
-    a learner (a machine learning algorithm). This learner will be used to 
-    train on classification tasks in meta-test set and evaluated.
+    a learner (a machine learning algorithm), which will be used to 
+    train on classification tasks generated from the meta-test set and evaluated.
+    A participant's submission will be evaluated by the capacity of this learner
+    to quickly adapt to new unseen tasks. Please refer to the evaluation section 
+    for more details.
 </p>
+<p>Instructions and a starting kit are provided in 
+    <a href="https://github.com/ebadrian/metadl">the dedicated GitHub repository</a>.
+</p> 

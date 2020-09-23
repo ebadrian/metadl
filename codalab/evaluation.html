@@ -1,41 +1,23 @@
 <h1>MetaDL Evaluation</h1>
 <p>
-    For every phase, the performance of meta-learning algorithms is measured 
+    
+    For both Feedback Phase and Public Phase, the performance of a meta-learning 
+    algorithm is measured 
     through the evaluation of 600 episodes at <strong>meta-test</strong> time. 
-    For each episode, your Learner produced by your meta-algorithm procedure 
-    (during meta-fit), is fitted with the episode's support set (train).
-    Once fitted, the Learner outputs a Predictor that will be used to predict 
-    the query examples labels.
+    The participant needs to implement a <code>MyMetaLearner</code> class that can meta-fit
+    a meta-train set and produce a <code>Learner</code> object, which in turn can fit any 
+    support set (a.k.a training set), generated from a meta-test set, and 
+    produce a <code>Predictor</code>. The accuracy of these predictors on 
+    each query set (or test set) is then averaged to produce a final score.
+    In Feedback Phase, this score is used to form a leaderboard. In Final Phase,
+    this score is usde as the criterion for deciding winners (and a leadberboard
+    will also be released).
+    
 </p>
-<h3>Episodes at meta-test time : We are using the 5-way 1-shot setting.</h3>
+<h3>Episodes at meta-test time</h3>
 <p>
+    We use the 5-way 1-shot few-shot learning setting. </br>
     <strong>Support set:</strong> 5 classes and 1 example per class 
     (labelled examples) <br /><strong>Query set:</strong> 5 classes and a 
-    varying number of examples per class (unlabelled examples)
+    <strong>varying number</strong> of examples per class (unlabelled examples)
 </p>
-<h3>How to format your predictions for each phase ?</h3>
-<table>
-    <caption>Query description for each phase</caption>
-    <tbody>
-    <tr>
-        <th>Phase</th>
-        <th># Query set examples</th>
-    </tr>
-    <tr>
-        <td>Public</td>
-        <td>95</td>
-    </tr>
-    <tr>
-        <td>Development</td>
-        <td>TBA</td>
-    </tr>
-    <tr>
-        <td>Final</td>
-        <td>TBA</td>
-    </tr>
-    </tbody>
-</table>
-
-<h3>
- 	Final score Metric : Sparse Categorical Accuracy.
-</h3>

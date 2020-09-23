@@ -1,11 +1,19 @@
 <h1>MetaDL Challenge</h1>
-<p><strong>Public dataset:</strong> The Omniglot dataset is provided during the Public phase.
-    The dataset contains 1623 classes from 50 different alphabets. Each of the 
-    1623 characters was drawn online via Amazon's Mechanical Turk by 20 different people.
-    The original dataset is presented in <href url="http://www.sciencemag.org/content/350/6266/1332.short">
-    this page</href>.
+During the challenge, each phase has its own data as a meta-dataset. Each 
+meta-dataset is used to generate few-shot learning tasks via an API from the
+<a href="https://github.com/google-research/meta-dataset/">Meta-dataset repo</a>.
+For more details, please refer to the provided
+<a href="https://github.com/ebadrian/metadl/tree/master/starting_kit/tutorial.ipynb">tutorial</a>.
+
+<p><strong>Public data:</strong> The Omniglot dataset is provided during the Public phase.
+    The dataset contains 1623 classes from 50 different alphabets. All images are of shape [28,28,3]. These characters were drawn online via Amazon's Mechanical Turk 
+    by 20 different people.
+    The original dataset is presented in <a href="http://www.sciencemag.org/content/350/6266/1332.short">
+    this page</a>. 
 </p>
-<p><strong>Development dataset:</strong> The dataset is kept hidden.</p>
-<p><strong>Final dataset:</strong> This phase will start at the very end of the challenge. 
-    The dataset is kept hidden.
+<p><strong>Feedback data:</strong> The data is kept hidden but you can get 
+    quick feedback on the leaderboard.
+</p>
+<p><strong>Final data:</strong> This phase will start at the very end of the challenge. 
+    The data is kept hidden.
 </p>

@@ -25,14 +25,14 @@ phases:
   # Development
   1:
     color: green
-    description: 'Development phase: create models and submit them or directly submit
+    description: 'Feedback phase: create models and submit them or directly submit
       results on validation and/or test data; feed-back are provided on the validation
       set only.'
     execution_time_limit: 500
     ingestion_program: ingestion_program.zip
     input_data: meta_train.zip
     is_scoring_only: false
-    label: Development
+    label: Feedback
     max_submissions: 100
     max_submissions_per_day: 15
     phasenumber: 1
