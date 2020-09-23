@@ -116,10 +116,9 @@ class DataGenerator():
                         valid_episode_config))     
         
         self.dataset_spec = dataset_spec_lib.load_dataset_spec(path_to_records)
-        # Loading root path. Allows to use DataGenerator not form root LLDL
-        for p in sys.path :
-            if p.endswith('LLDL'):
-                root_path = p
+        
+        # Loading root path.
+        root_path = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)
         gin_path = os.path.join(root_path, 'metadl/gin/default/decoders.gin')
         gin.parse_config_file(gin_path)
 

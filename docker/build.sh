@@ -8,12 +8,12 @@ VERSION=`cat VERSION`
 rm -rf .metadl
 rm -rf .meta-dataset
 
-# git clone https://github.com/ebadrian/LLDL.git
+# git clone https://github.com/ebadrian/metadl.git
 mkdir .metadl
 cp -r ../metadl .metadl/
 cp ../setup.py .metadl/
 
-# WARNING: you should make following clone in parallel with this repo (LLDL)
+# WARNING: you should make following clone in parallel with this repo (metadl)
 # git clone https://github.com/google-research/meta-dataset.git
 cp -r ../../meta-dataset .meta-dataset
 
