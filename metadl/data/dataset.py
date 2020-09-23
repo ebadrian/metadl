@@ -196,7 +196,7 @@ class DataGenerator():
             shuffle_buffer_size=None,
             read_buffer_size_bytes=None,
             num_prefetch=0,
-            image_size=self.image_size,
+            image_size=self.episode_config[0],
             num_to_take=None
         )
         logging.info('Meta-test episode config : {}'.format(
