@@ -1,0 +1,24 @@
+import meta_dataset.data.decoder
+
+process_episode.support_decoder = @support/ImageDecoder()
+process_dumped_episode.support_decoder = @support/ImageDecoder()
+support/ImageDecoder.data_augmentation = @support/DataAugmentation()
+support/DataAugmentation.enable_jitter = True
+support/DataAugmentation.jitter_amount = 0
+support/DataAugmentation.enable_gaussian_noise = True
+support/DataAugmentation.gaussian_noise_std = 0.0
+
+process_episode.query_decoder = @query/ImageDecoder()
+process_dumped_episode.query_decoder = @query/ImageDecoder()
+query/ImageDecoder.data_augmentation = @query/DataAugmentation()
+query/DataAugmentation.enable_jitter = False
+query/DataAugmentation.jitter_amount = 0
+query/DataAugmentation.enable_gaussian_noise = False
+query/DataAugmentation.gaussian_noise_std = 0.0
+
+process_batch.batch_decoder = @batch/ImageDecoder()
+batch/ImageDecoder.data_augmentation = @batch/DataAugmentation()
+batch/DataAugmentation.enable_jitter = True
+batch/DataAugmentation.jitter_amount = 0
+batch/DataAugmentation.enable_gaussian_noise = True
+batch/DataAugmentation.gaussian_noise_std = 0.0

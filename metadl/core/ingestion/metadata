@@ -1,0 +1,1 @@
+command: python -m metadl.core.ingestion.ingestion --meta_train_dir=$input --code_dir=$submission_program --model_dir=$output

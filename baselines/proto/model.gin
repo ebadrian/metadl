@@ -1,0 +1,9 @@
+# MetaLearner parameters
+MyMetaLearner.img_size = 28
+MyMetaLearner.N_ways = 60
+MyMetaLearner.K_shots = 1
+
+# Learner parameters
+MyLearner.N_ways = 5
+MyLearner.K_shots = 1
+MyLearner.img_size = 28

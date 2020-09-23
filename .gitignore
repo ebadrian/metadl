@@ -1,0 +1,33 @@
+# Mac OS
+*.DS_Store
+
+# Python
+*__pycache__*
+*.egg-info*
+
+# Data
+*metadl/starting_kit/data*
+*.zip
+*/bundles/*
+*.tfrecords
+*dataset_spec.json
+
+# logs 
+*logs*
+
+# VS Code
+*.vscode*
+
+# Copy of packages
+*.metadl*
+*.meta-dataset*
+
+# Notebook cache
+*.ipynb_checkpoints*
+
+# scores
+*scoring_output*
+*model_dir/*
+
+
+
