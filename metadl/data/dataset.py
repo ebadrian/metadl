@@ -41,7 +41,7 @@ class DataGenerator():
                  path_to_records,
                  batch_config=None,
                  episode_config=[28,5,1,19],
-                 valid_episode_config=None,
+                 valid_episode_config=[28,5,1,19],
                  pool='train',
                  mode='episode'
                  ):
@@ -102,7 +102,18 @@ class DataGenerator():
                 raise ValueError(('The episode config argument in DataGenerator '
                     + 'is not defined properly. Make sure it has the form '
                     + '[img_size, num_ways, num_shots, num_query]. '
-                    + 'Received episode_config : {}').format(episode_config))        
+                    + 'Received episode_config : {}').format(episode_config))
+
+            try:
+                _, _, _, _ = (self.valid_episode_config[0], 
+                    self.valid_episode_config[1], self.valid_episode_config[2],
+                    self.valid_episode_config[3])
+            except:
+                raise ValueError(('The episode config argument in DataGenerator '
+                    + 'is not defined properly. Make sure it has the form '
+                    + '[img_size, num_ways, num_shots, num_query]. '
+                    + 'Received episode_config : {}').format(
+                        valid_episode_config))     
         
         self.dataset_spec = dataset_spec_lib.load_dataset_spec(path_to_records)
         # Loading root path. Allows to use DataGenerator not form root LLDL
