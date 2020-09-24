@@ -23,12 +23,17 @@ In the **Jupyter Notebook** `tutorial.ipynb` you will learn the following things
 ## Setup
 
 ### Download the starting kit
-You should clone the whole **metadl** repository first. Make sure your git is setup and you have the necessary credentials. Then run the following command in the empty root directory of your project :
+You should clone the whole **metadl** repository first. Then run the following command in the empty root directory of your project :
 ```
 git clone git@github.com:$USERNAME/metadl.git
 ```
+We provide 2 ways of installing the necessary dependencies :
+* [via Conda environment](#set-up-the-environment-with-anaconda)
+* [via Docker environment](#set-up-the-environment-with-docker)
 
-### Environment setup
+You can choose your preferred option and directly jump into the corresponding section.
+### Set up the environment with Anaconda
+
 **Note** : We assume that you have already installed anaconda on your device. If it's not the case, please check out the right installation guide for your machine in the following link : [conda installation guide](https://docs.conda.io/projects/conda/en/latest/user-guide/install/).
 
 A script `quick_start.sh` is available and allows to quickly set up a conda environment with all the required modules/packages installed. 
@@ -62,7 +67,49 @@ And launch Jupyter notebook the following way :
 jupyter-notebook
 ```
 You will access the Jupyter menu, click on `tutorial.ipynb` and you are all set.
+### Set up the environment with Docker
+First, make sure you cloned the GitHub repository : 
+```bash
+git clone https://github.com/ebadrian/metadl
+```
+Then, download the Public data, that is, the **Omniglot** dataset : 
+```bash
+wget -c https://competitions.codalab.org/my/datasets/download/57327142-2155-4b37-9ee7-74820f56c812 -O omniglot.zip
+```
+Finally, unzip it : 
+```bash
+unzip omniglot.zip
+```
 
+---
+
+If you are new to docker, install docker from https://docs.docker.com/get-started/.
+The following docker image is available to run local tests on your machine. It essentially setups the necessary packages and the Python environment for the competition.
+This command will create a container and run the docker image :
+```bash
+docker run -it -v "$(pwd):/app/codalab" -p 8888:8888 ebadrian/metadl:gpu-latest
+```
+The option `-v "$(pwd):/app/codalab"` mounts current directory (`starting_kit/`) as `/app/codalab`.
+If you want to mount other directories on your disk, please replace $(pwd) by your own directory. The option -p 8888:8888 is useful for running a Jupyter notebook tutorial inside Docker.
+
+Both Docker images have python=3.6.9 and have installed packages such as tensorflow=2.3.0 and its associated Keras version, CUDA 10.1, cuDNN 7.6.4, etc. If you want to run local test with Nvidia GPU support, please make sure you have installed nvidia-docker and run instead:
+```bash
+nvidia-docker run -it -v "$(pwd):/app/codalab" -p 8888:8888 ebadrian/metadl:gpu-latest
+```
+Make sure you use enough RAM (at least 4GB). If the port 8888 is occupied, you can use other ports, e.g. 8899, and use instead the option `-p 8899:8888`.
+
+#### Run the tutorial notebook
+We provide a tutorial in the form of a Jupyter notebook. When you are in your docker container, enter:
+
+```bash
+jupyter-notebook --ip=0.0.0.0 --allow-root &
+```
+Then copy and paste the URL containing your token. It should look like something like that:
+
+```bash
+http://0.0.0.0:8888/?token=82e416e792c8f6a9f2194d2f4dbbd3660ad4ca29a4c58fe7
+```
+and select tutorial.ipynb in the menu.
 
 ### Update the starting kit
 
@@ -80,7 +127,7 @@ We provide a public dataset for participants. They can use it to :
 * Explore data
 * Do local test of their own algorithm
 
-If you ran the `quick_start.sh` script, you should already have a new directory that contains the competition public data. This data is the Omniglot dataset that is divided into 2 file :
+If you followed any of the 2 installation methods, you should already have a new directory that contains the competition public data. This data is the Omniglot dataset that is divided into 2 file :
 ```
 metadl
 meta-dataset
@@ -112,7 +159,7 @@ First let's describe what scripts a partcipant should write to create a submissi
 
 * **model.gin** (Optionnal) : If you are familiar with the [*gin* package](https://github.com/google/gin-config), you can use it to define 
 the parameters of your model (e.g. learning rates, etc ...). This file could help organize your submission and keep track of the setups on which you defined you algorithm.
-
+* **config.gin** (Optionnal) : This file allows participants to meta-fit their algorithm on data with a specific **configuration**. Examples are provided in the `tutorial.ipynb`.
 * **<any_file.py>** (Optionnal) : Sometimes you would need to create a specfic architecture of a neural net or any helper function for
 your meta-learning procedure. You can include all the files you'd like but make sure you import them correctly in **model.py** as it is the only script executed.
 
@@ -128,20 +175,25 @@ Zip the contents of `baselines/zero`(or any folder containing your `model.py` fi
 cd ../baselines/zero
 zip -r mysubmission.zip *
 ```
-**Note** : The command above makes sense if you current working directory is `starting_kit`.
+**Note** : The command above assumes your current working directory is `starting_kit`.
 
 Then use the "Upload a Submission" button to make a submission to the
 competition page on CodaLab platform.
 
-Tip: to look at what's in your submission zip file without unzipping it, you
-can do
+**Tip**: One could run the following command to check the content of a zipped submission folder.
 ```bash
 unzip -l mysubmission.zip
 ```
 ## Troubleshooting
 
-* It is highly recommended to use the previous guidelines to prepare a zip file submission insteand of simply compressing the code folder in the *Finder* (for MAC users).
-* Make sure your submission always write a file in the Learner's `save()` method. Otherwise, the submission will fail and CodaLab will return the following error during the **scoring** phase : `ModuleNotFoundError: No module named 'model'`.
+* It is highly recommended to use the previous guidelines to prepare a zip file submission instead of simply compressing the code folder in the *Finder* (for MAC users).
+* Make sure your submission always writes a file in the Learner's `save()` method. Otherwise, the submission will fail and CodaLab will return the following error during the **scoring** phase : `ModuleNotFoundError: No module named 'model'`.
+* Remember that the `run.py` script combines the run of the ingestion and scoring process in one command. If something went wrong in the ingestion process, you will receive this error message : 
+    ```code
+    from model import MyLearner
+    ModuleNotFoundError: No module named 'model'
+    ```
+    Indeed, the ingestion failed and weren't able to save the submission code (along with your saved Learner) to be accessed in the scoring process. Thus the system can't access the `model.py`. 
 
 ## Report bugs and create issues 
 
@@ -149,4 +201,4 @@ If you run into bugs or issues when using this starting kit, please create issue
 
 ## Contact us 
 If you have any questions, please contact us via : 
-<eb.adrian@hotmail.fr>
+<metadl@chalearn.org>
