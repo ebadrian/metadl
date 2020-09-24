@@ -1,4 +1,0 @@
-FROM evariste/metadl:gpu-latest
-
-# Overwrite the GPU version of TensorFlow to support environment with only CPU
-RUN pip install tensorflow==2.3.0

@@ -13,6 +13,9 @@ FROM tensorflow/tensorflow:2.3.0-gpu
 # we'll uncomment corresponding line and rebuild this image.
 # RUN pip install tensorflow_hub==0.7.0
 # RUN pip install fastai
+RUN pip install matplotlib
+RUN pip install jupyter
+RUN pip install scikit-learn
 
 WORKDIR /app/codalab
 ADD VERSION .
