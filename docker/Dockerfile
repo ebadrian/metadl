@@ -7,15 +7,16 @@ FROM tensorflow/tensorflow:2.3.0-gpu
 # In the case where you want to use less common packages, you can simply put
 # all these packages in the the same folder of your submission (together with
 # `model.py`) and the CodaLab platform should be able to find them.
+RUN pip install matplotlib
+RUN pip install jupyter
+RUN pip install scikit-learn
 
 # Packages to be activated: Following packages are demanded by one of the
 # participants. If another participant asks to install one of these packages,
 # we'll uncomment corresponding line and rebuild this image.
 # RUN pip install tensorflow_hub==0.7.0
 # RUN pip install fastai
-RUN pip install matplotlib
-RUN pip install jupyter
-RUN pip install scikit-learn
+RUN pip install tensorflow_addons
 
 WORKDIR /app/codalab
 ADD VERSION .

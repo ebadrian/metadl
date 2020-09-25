@@ -23,9 +23,9 @@ In the **Jupyter Notebook** `tutorial.ipynb` you will learn the following things
 ## Setup
 
 ### Download the starting kit
-You should clone the whole **metadl** repository first. Then run the following command in the empty root directory of your project :
+You should clone the whole **metadl** repository first by running the following command in the empty root directory of your project :
 ```
-git clone git@github.com:$USERNAME/metadl.git
+git clone https://github.com/ebadrian/metadl
 ```
 We provide 2 ways of installing the necessary dependencies :
 * [via Conda environment](#set-up-the-environment-with-anaconda)
@@ -68,10 +68,7 @@ jupyter-notebook
 ```
 You will access the Jupyter menu, click on `tutorial.ipynb` and you are all set.
 ### Set up the environment with Docker
-First, make sure you cloned the GitHub repository : 
-```bash
-git clone https://github.com/ebadrian/metadl
-```
+First, make sure you cloned the GitHub repository.
 Then, download the Public data, that is, the **Omniglot** dataset : 
 ```bash
 wget -c https://competitions.codalab.org/my/datasets/download/57327142-2155-4b37-9ee7-74820f56c812 -O omniglot.zip
@@ -92,7 +89,7 @@ docker run -it -v "$(pwd):/app/codalab" -p 8888:8888 ebadrian/metadl:gpu-latest
 The option `-v "$(pwd):/app/codalab"` mounts current directory (`starting_kit/`) as `/app/codalab`.
 If you want to mount other directories on your disk, please replace $(pwd) by your own directory. The option -p 8888:8888 is useful for running a Jupyter notebook tutorial inside Docker.
 
-Both Docker images have python=3.6.9 and have installed packages such as tensorflow=2.3.0 and its associated Keras version, CUDA 10.1, cuDNN 7.6.4, etc. If you want to run local test with Nvidia GPU support, please make sure you have installed nvidia-docker and run instead:
+The Docker image has python=3.6.9 and has installed packages such as tensorflow=2.3.0 and its associated Keras version, CUDA 10.1, cuDNN 7.6.4, etc. If you want to run local test with Nvidia GPU support, please make sure you have installed nvidia-docker and run instead:
 ```bash
 nvidia-docker run -it -v "$(pwd):/app/codalab" -p 8888:8888 ebadrian/metadl:gpu-latest
 ```
@@ -109,7 +106,7 @@ Then copy and paste the URL containing your token. It should look like something
 ```bash
 http://0.0.0.0:8888/?token=82e416e792c8f6a9f2194d2f4dbbd3660ad4ca29a4c58fe7
 ```
-and select tutorial.ipynb in the menu.
+and select `metadl/starting_kit/tutorial.ipynb` in the menu.
 
 ### Update the starting kit
 
