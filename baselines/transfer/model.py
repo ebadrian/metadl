@@ -6,33 +6,42 @@ and we fine-tune a classifer on top of this embedding function.
 import os
 import logging
 import csv 
+import datetime
 
 import tensorflow as tf
 from tensorflow import keras
+import gin
 
 from metadl.api.api import MetaLearner, Learner, Predictor
 
+@gin.configurable
 class MyMetaLearner(MetaLearner):
     """ Loads and fine-tune a model pre-trained on ImageNet. """
-    def __init__(self):
+    def __init__(self,
+                iterations=10,
+                freeze_base=True,
+                total_meta_train_class=883):
         super().__init__()
+        self.iterations = iterations
+        self.freeze_base = freeze_base
+        self.total_meta_train_class = total_meta_train_class
+
         self.base_model = keras.applications.Xception(
             weights='imagenet',
             input_shape=(71,71,3),
             include_top=False
         )
-        self.base_model.trainable = False
+        self.base_model.trainable = (not self.freeze_base)
         inputs = keras.Input(shape=(71,71,3))
-        x = self.base_model(inputs, training=False)
+        x = self.base_model(inputs, training=True)
         x = keras.layers.GlobalAveragePooling2D()(x)
-        outputs = keras.layers.Dense(863)(x)
+        outputs = keras.layers.Dense(self.total_meta_train_class)(x)
         self.model = keras.Model(inputs, outputs)
 
         self.loss = keras.losses.SparseCategoricalCrossentropy()
-        self.optimizer = keras.optimizers.SGD(0.01)
+        self.optimizer = keras.optimizers.Adam()
         self.acc = keras.metrics.SparseCategoricalAccuracy()
 
-        self.meta_iterations = 100
         # Summary Writers
         self.current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         self.train_log_dir = ('logs/transfer/gradient_tape/' + self.current_time 
@@ -71,7 +80,10 @@ class MyMetaLearner(MetaLearner):
 
         count = 0
         logging.info('Starting meta-fit for the transfer baseline ...')
-
+        meta_iterator = meta_train_dataset.__iter__()
+        sample_data = next(meta_iterator)
+        logging.info('Images shape : {}'.format(sample_data[0][0].shape))
+        logging.info('Labels shape : {}'.format(sample_data[0][1].shape))
         for (images, labels), _ in meta_train_dataset :
             with tf.GradientTape() as tape :
                 preds = self.model(images)
@@ -79,25 +91,28 @@ class MyMetaLearner(MetaLearner):
             grads = tape.gradient(loss, self.model.trainable_weights)
             self.optimizer.apply_gradients(
                 zip(grads, self.model.trainable_weights))
-
+            logging.info('Iteration #{} - Loss : {}'.format(count, loss.numpy()))
             self.train_accuracy.update_state(labels, preds)
             self.train_loss.update_state(loss)
             
             if count % 50 == 0 :
                 with self.train_summary_writer.as_default():
-                    tf.summary.scalar('Train loss', self.train_loss, 
-                        description='Avg train loss over 50 batches')
-                    tf.summary.scalar('Train acc', self.train_accuracy, 
+                    tf.summary.scalar('Train loss', self.train_loss.result(),
+                        step=count, 
+                        description='Avg train loss over 50 batches',)
+                    tf.summary.scalar('Train acc', self.train_accuracy.result(),
+                        step=count, 
                         description='Avg train accuracy over 50 batches')
                 self.train_loss.reset_states()
                 self.train_accuracy.reset_states()
-                #TODO(@ebadrian) Handle the deep copy, atm weights could be changed
+
                 self.evaluate(MyLearner(self.model), meta_valid_dataset)
+
                 self.valid_accuracy.reset_states()
                 self.valid_loss.reset_states()
 
             count += 1
-            if count >= self.meta_iterations :
+            if count >= self.iterations :
                 break
 
         return MyLearner(self.model)
@@ -136,7 +151,7 @@ class MyMetaLearner(MetaLearner):
         logging.info('Meta-Valid accuracy : {:.3%}'.format(
             self.valid_accuracy.result()))
 
-
+@gin.configurable
 class MyLearner(Learner):
     def __init__(self, 
                 model=None,
@@ -165,11 +180,10 @@ class MyLearner(Learner):
         else : 
             new_model = keras.models.clone_model(model)
             new_model = keras.Model(inputs=model.input, outputs=model.layers[-2].output)
-            
             x = new_model.output
-            outputs = keras.layers.Dense(5, activation='softmax')(x)
+            outputs = keras.layers.Dense(self.N_ways, activation='softmax')(x)
             new_model = keras.Model(inputs=new_model.input, outputs = outputs)
-            self.model = model
+            self.model = new_model
 
         self.optimizer = keras.optimizers.Adam()
         self.loss = keras.losses.SparseCategoricalCrossentropy()
@@ -192,7 +206,7 @@ class MyLearner(Learner):
             with tf.GradientTape() as tape :
                 preds = self.model(images)
                 loss = self.loss(labels, preds)
-            logging.info('Loss on support set : {}'.format(loss))
+            logging.debug('[FIT] Loss on support set : {}'.format(loss))
             grads = tape.gradient(loss, self.model.trainable_weights)
             self.optimizer.apply_gradients(
                 zip(grads, self.model.trainable_weights))
@@ -222,7 +236,7 @@ class MyLearner(Learner):
 
         ckpt_path = os.path.join(model_dir, 'learner.ckpt')
         self.model.load_weights(ckpt_path)
-    
+
     
 class MyPredictor(Predictor):
     def __init__(self, model):

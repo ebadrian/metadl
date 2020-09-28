@@ -1,0 +1,7 @@
+# MyMetaLearner parameters
+MyMetaLearner.iterations = 10
+MyMetaLearner.freeze_base = True
+MyMetaLearner.total_meta_train_class = 883 # Omniglot config
+
+# MyLearner parameters
+MyLearner.N_ways = 5 
