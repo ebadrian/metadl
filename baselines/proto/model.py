@@ -24,6 +24,8 @@ class MyMetaLearner(MetaLearner):
                 img_size,
                 N_ways,
                 K_shots,
+                embedding_dim,
+                meta_iterations,
                 distance_fn=tf.norm):
         """
         Args: 
@@ -31,6 +33,9 @@ class MyMetaLearner(MetaLearner):
                         (img_size, img_size, 3)
             N_ways : Number of ways, i.e. classes in a task
             K_shots : Number of examples per class in the support set
+            embedding_dim : Integer, embedding dimension
+            meta_iterations : Integer, number of episodes to consider at 
+                meta-train time
             distance_fn : Distance function to consider for the proto-networks
             
         """
@@ -39,15 +44,14 @@ class MyMetaLearner(MetaLearner):
         self.N_ways = N_ways
         self.K_shots = K_shots
         self.embedding_fn = conv_net(self.N_ways, self.img_size)
-        
-        self.prototypes = create_proto_shells(self.N_ways, 64)
+        self.embedding_dim = embedding_dim
+        self.meta_iterations = meta_iterations
+
+        self.prototypes = create_proto_shells(self.N_ways, self.embedding_dim)
         self.distance_fn = distance_fn
         self.learning_rate = 0.005
         self.optimizer = tf.optimizers.Adam(learning_rate=self.learning_rate)
         self.loss = 0
-
-        self.meta_batch_size = 1
-        self.meta_iterations = 7000
 
         # Summary Writers
         self.current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -151,9 +155,9 @@ class MyMetaLearner(MetaLearner):
                     proj_image - self.prototypes[label[0].numpy()]))
                 # Log sum exp of difference between projections and prototypes
                 tmp2 = tf.math.reduce_logsumexp(-tf.math.square(
-                    self.distance_fn(tf.broadcast_to(tf.expand_dims(proj_image, axis=0), (self.N_ways,1,64))
+                    self.distance_fn(tf.broadcast_to(tf.expand_dims(proj_image, axis=0), (self.N_ways,1,self.embedding_dim))
                     - self.prototypes, axis=2)))
-                # tf.exp : [5, 1, 64]
+                # tf.exp : [5, 1, self.embedding_dim]
                 self.loss += cste * (tmp1 + tmp2)
             
             logging.info('Loss on a task : {}'.format(self.loss))
@@ -185,7 +189,7 @@ class MyMetaLearner(MetaLearner):
         meta_train_dataset = meta_dataset_generator.meta_train_pipeline
         meta_valid_dataset = meta_dataset_generator.meta_valid_pipeline
 
-        meta_train_dataset = meta_train_dataset.batch(self.meta_batch_size)
+        meta_train_dataset = meta_train_dataset.batch(1)
         meta_valid_dataset = meta_valid_dataset.batch(2)
         logging.info('Starting meta-fit for the proto-net ...')
         for tasks_batch in meta_train_dataset :
@@ -213,7 +217,7 @@ class MyMetaLearner(MetaLearner):
                     self.evaluate(MyLearner(N_ways= 5,
                                             K_shots=1,
                                             img_size=28,
-                                            embedding_dimension=64,
+                                            embedding_dimension=self.embedding_dim,
                                             embedding_fn =self.embedding_fn),
                                 meta_valid_dataset)
                     with self.valid_summary_writer.as_default():
@@ -256,8 +260,6 @@ class MyMetaLearner(MetaLearner):
                                                 dtype=tf.int32,
                                                 seed=1)
         angle = tf.cast(random_int_rotation / 4, dtype=tf.float32)
-        #batch_size_support = supp_img.shape[0]
-        #batch_size_query = que_img.shape[0]
         supp_img = tfa.image.rotate(supp_img, angle)
         que_img = tfa.image.rotate(que_img, angle)
         return supp_img, que_img
@@ -382,7 +384,7 @@ class MyPredictor(Predictor):
         batch_size = 95
         projected_images = self.embedding_fn(images)
         embedding_dim = projected_images.shape[1]
-        broadcasted_projections = tf.broadcast_to(tf.expand_dims(
+        broadcast_projections = tf.broadcast_to(tf.expand_dims(
                                     projected_images, axis = 1),
                                     [batch_size,5,embedding_dim])
 
@@ -390,16 +392,18 @@ class MyPredictor(Predictor):
         logging.debug('Prototype shape : {}'.format(self.prototypes[0].shape))
         logging.debug('Batch size : {}'.format(batch_size))
         logging.debug('Embedding dimension : {}'.format(embedding_dim))
-        logging.debug('Broadcasted embeddings shape: {}'.format(
-            broadcasted_projections.shape))
+        logging.debug('Broadcast embeddings shape: {}'.format(
+            broadcast_projections.shape))
         
-        broadcasted_proto = tf.broadcast_to(
+        broadcast_proto = tf.broadcast_to(
                         tf.expand_dims(tf.squeeze(self.prototypes),axis =0),
                         [batch_size,5,embedding_dim])
-        
-        exps = tf.exp(-tf.math.square(
-            self.distance(broadcasted_projections - broadcasted_proto,axis = 2)))
-
+        dists = -tf.math.square(
+            self.distance(broadcast_projections - broadcast_proto, axis =2))
+        max_dists = tf.reduce_max(dists, axis =1)
+        max_dists = tf.expand_dims(max_dists, axis =1)
+        dists = dists - max_dists
+        exps = tf.exp(dists)
         sum_exps = tf.broadcast_to(tf.expand_dims(
                     tf.reduce_sum(exps, axis = 1), axis = 1), [batch_size,5])
         
