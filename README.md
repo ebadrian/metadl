@@ -9,7 +9,7 @@ This repository contains the code associated to the Meta-Learning challenge orga
 - Joaquin Vanschoren (Eindhoven University, the Netherlands)
 - Lisheng Sun (UPSud, France)
 
-[CodaLab competition link](https://competitions.codalab.org/competitions/26212?secret_key=a50a8a46-e33a-497c-9121-d56a0b576c07)
+[CodaLab competition link](https://competitions.codalab.org/competitions/26638#learn_the_details)
 
 ## Outline 
 [I - Overview](#i---overview)

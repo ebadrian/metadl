@@ -198,4 +198,5 @@ If you run into bugs or issues when using this starting kit, please create issue
 
 ## Contact us 
 If you have any questions, please contact us via : 
-<metadl@chalearn.org>
+<metalearningchallenge@googlegroups.com>
+
