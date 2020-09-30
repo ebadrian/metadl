@@ -45,6 +45,8 @@ flags.DEFINE_boolean('debug_mode',
                     False,
                     'Whether to use debug verbosity.')
 
+tf.random.set_seed(1234)
+
 def get_gin_path():
     """ Get the absolute path of a gin file in a compute_worker. This method is 
     necessary since we can't know the directory names in advance (temporary 

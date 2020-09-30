@@ -17,6 +17,7 @@ from metadl.api.api import MetaLearner, Learner, Predictor
 from utils import create_proto_shells, reset_proto_shell
 from helper import conv_net
 
+tf.random.set_seed(1234)
 @gin.configurable
 class MyMetaLearner(MetaLearner):
 
@@ -73,7 +74,7 @@ class MyMetaLearner(MetaLearner):
             name = 'valid_accuracy')
 
         self.curr_metab = tf.Variable(0, dtype = tf.int32)
-        tf.random.set_seed(1234)
+        
     #@tf.function
     def compute_prototypes(self, support_dataset):
         """ 
@@ -258,11 +259,12 @@ class MyMetaLearner(MetaLearner):
                                                 minval=0,
                                                 maxval=3,
                                                 dtype=tf.int32,
-                                                seed=1)
+                                                seed=1234)
         angle = tf.cast(random_int_rotation / 4, dtype=tf.float32)
         supp_img = tfa.image.rotate(supp_img, angle)
         que_img = tfa.image.rotate(que_img, angle)
         return supp_img, que_img
+
 @gin.configurable
 class MyLearner(Learner):
 

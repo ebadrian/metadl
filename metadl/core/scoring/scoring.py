@@ -38,6 +38,7 @@ flags.DEFINE_string('score_dir',
                     './scoring_output',
                     'Path to the score directory.')
 
+tf.random.set_seed(1234)
 def NwayKshot_accuracy(predictions, ground_truth, metric):
     """ N-way, K-shot accuracy which corresponds to the accuracy in a
     multi-classification context with N classes.
@@ -177,7 +178,7 @@ def scoring(argv):
     score_file = os.path.join(score_dir, 'scores.txt')
     results = []
     metric = tf.metrics.SparseCategoricalAccuracy()
-    nbr_episodes = 100
+    nbr_episodes = 600
 
     for k , task in enumerate(meta_test_dataset) :
         support_set, query_set, ground_truth = process_task(task)
