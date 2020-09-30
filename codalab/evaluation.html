@@ -10,13 +10,18 @@
     produce a <code>Predictor</code>. The accuracy of these predictors on 
     each query set (or test set) is then averaged to produce a final score.
     In Feedback Phase, this score is used to form a leaderboard. In Final Phase,
-    this score is usde as the criterion for deciding winners (and a leadberboard
+    this score is used as the criterion for deciding winners (and a leadberboard
     will also be released).
-    
+</br>
+</br>
+    One important aspect of the challenge is that submissions must produce
+    a <code>Learner</code> within 2 hours of compute power. The GPU available
+    is a <strong>Tesla M60</strong>.
 </p>
 <h3>Episodes at meta-test time</h3>
 <p>
-    We use the 5-way 1-shot few-shot learning setting. </br>
+    We use the 5-way 1-shot few-shot learning setting.</br>
+</br>
     <strong>Support set:</strong> 5 classes and 1 example per class 
     (labelled examples) <br /><strong>Query set:</strong> 5 classes and a 
     <strong>varying number</strong> of examples per class (unlabelled examples)

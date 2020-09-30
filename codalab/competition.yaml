@@ -4,13 +4,13 @@ allow_public_submissions: true
 allow_teams: false
 anonymous_leaderboard: false
 description: Meta-learning with Deep Learning.
-start_date: 2020-09-23 00:00:00+00:00
+start_date: 2020-09-30 18:00:00+00:00
 competition_docker_image: 'ebadrian/metadl:gpu-latest'
 disallow_leaderboard_modifying: true
-enable_detailed_results: true
+enable_detailed_results: false
 enable_forum: true
 enable_per_submission_metadata: false
-end_date: null
+end_date: 2020-11-11 20:00:00+00:00
 force_submission_to_leaderboard: true
 has_registration: false
 html:
@@ -39,7 +39,7 @@ phases:
     public_data: 57327142-2155-4b37-9ee7-74820f56c812
     reference_data: b8eb8623-783a-443f-a961-e438272f4cef
     scoring_program: scoring_program.zip
-    start_date: 2020-09-23 15:30:00+00:00 # YYYY-MM-DD
+    start_date: 2020-09-30 18:30:00+00:00 # YYYY-MM-DD
     starting_kit: starting_kit.zip
   # Final
   2:
@@ -57,7 +57,7 @@ phases:
     phasenumber: 2
     reference_data: 5009495f-2421-4686-93db-2a261ac92826
     scoring_program: scoring_program.zip
-    start_date: 2020-09-24 18:30:00+00:00 # YYYY-MM-DD
+    start_date: 2020-11-08 21:30:00+00:00 # YYYY-MM-DD
 show_datasets_from_yaml: true
 title: "MetaDL Challenge: Beta Tests"
 
