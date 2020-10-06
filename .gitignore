@@ -11,6 +11,7 @@
 */bundles/*
 *.tfrecords
 *dataset_spec.json
+*out.txt
 
 # logs 
 *logs*

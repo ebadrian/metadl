@@ -46,7 +46,7 @@ echo "BROKER_USE_SSL=True" >> .env
 
 
 # Create and run new CodaLab container
-sudo mkdir -p /tmp/codalab && nvidia-docker run \
+sudo mkdir -p /tmp/codalab && sudo nvidia-docker run \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v /var/lib/nvidia-docker/nvidia-docker.sock:/var/lib/nvidia-docker/nvidia-docker.sock \
     -v /tmp/codalab:/tmp/codalab \
