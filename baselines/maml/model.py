@@ -369,7 +369,7 @@ class MyPredictor(Predictor):
 
         Note : In the challenge N_ways = 5 at meta-test time.
         """
-        for images_test in query_set:
+        for images_test in dataset_test:
             preds = self.learner(images_test)
         return preds
 
