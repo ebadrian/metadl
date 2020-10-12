@@ -24,6 +24,9 @@ cd ../meta-dataset
 cp ../metadl/misc/setup.py .
 pip install -e .
 
+# Install tensorflow addons 
+pip install tensorflow_addons
+
 # Install notebook
 conda install -c conda-forge jupyterlab
 pip install jupyterlab
