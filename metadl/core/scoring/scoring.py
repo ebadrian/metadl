@@ -112,8 +112,18 @@ def process_task(task):
     """
     sup_set = tf.data.Dataset.from_tensor_slices(\
         (task[0][1], task[0][0]))
-    que_set = tf.data.Dataset.from_tensor_slices(\
-        (task[0][4], task[0][3]))
+    dim = task[0][4].shape[1]
+    arr = np.arange(dim)
+    np.random.shuffle(arr) # shuffling arr
+    query_labs = task[0][4]
+    query_imgs = task[0][3]
+    
+    query_labs_s = tf.gather(query_labs, arr, axis=1)
+    query_imgs_s = tf.gather(query_imgs, arr, axis=1)
+
+    que_set = tf.data.Dataset.from_tensor_slices(
+            (query_labs_s, query_imgs_s)
+    )
     new_ds = tf.data.Dataset.zip((sup_set, que_set))
     for ((supp_labs, supp_img), (que_labs, que_img)) \
             in new_ds :
@@ -182,7 +192,6 @@ def scoring(argv):
 
     for k , task in enumerate(meta_test_dataset) :
         support_set, query_set, ground_truth = process_task(task)
-
         learner.load(saved_model_dir)
         predictor = learner.fit(support_set)
         predictions = predictor.predict(query_set)
@@ -205,6 +214,7 @@ def scoring(argv):
     )
 
 if __name__ == '__main__':
+    np.random.seed(seed=1234)
     tf.get_logger().setLevel('ERROR')
     app.run(scoring)
 
