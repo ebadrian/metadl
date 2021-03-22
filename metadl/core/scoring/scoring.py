@@ -18,6 +18,7 @@ from absl import app
 from absl import flags 
 from absl import logging
 import tensorflow as tf
+import scipy 
 
 from metadl.data.dataset import DataGenerator
 from metadl.core.ingestion.ingestion import get_gin_path, show_dir
@@ -77,6 +78,11 @@ def write_score(score, file_score, duration=-1):
     file_score.write('set1_score: {:.6f}\n'.format(float(score)))
     file_score.write('Duration: {:.6f}\n'.format(float(duration)))
     
+def write_variance(varr, file_score):
+    """Write variance of accuracies of the meta-test episodes task in the given 
+    file_score."""
+    file_score.write('variance: {:.6f}\n'.format(float(varr)))
+
 def extract_elapsed_time(saved_model_dir):
     """ Extracts elapsed time from the metadata file. It corresponds to the 
     meta-training time, the duration of the ingestion process.
@@ -207,6 +213,7 @@ def scoring(argv):
         write_score(sum(results)/len(results),
                     f, 
                     extract_elapsed_time(saved_model_dir))
+        write_variance(scipy.std(results), f)
 
     logging.info(('Scoring done! The average score over {} '
         + 'episodes is : {:.3%}').format(nbr_episodes,
