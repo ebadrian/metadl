@@ -12,13 +12,13 @@ python -m metadl.core.scoring.scoring --meta_test_dir=<path_dataset.meta_test>
 import os 
 from sys import path
 
+import scipy.stats
 import gin
 import numpy as np 
 from absl import app
 from absl import flags 
 from absl import logging
 import tensorflow as tf
-import scipy 
 
 from metadl.data.dataset import DataGenerator
 from metadl.core.ingestion.ingestion import get_gin_path, show_dir
@@ -38,6 +38,10 @@ flags.DEFINE_string('saved_model_dir',
 flags.DEFINE_string('score_dir',
                     './scoring_output',
                     'Path to the score directory.')
+
+flags.DEFINE_string('evaltype',
+                    'test',
+                    'Data type on which to perform evaluation. [train, val, test]')
 
 tf.random.set_seed(1234)
 def NwayKshot_accuracy(predictions, ground_truth, metric):
@@ -73,16 +77,12 @@ def is_one_hot_vector(x, axis=None, keepdims=False):
   norm_inf = np.linalg.norm(x, ord=np.inf, axis=axis, keepdims=keepdims)
   return np.logical_and(norm_1 == 1, norm_inf == 1)
 
-def write_score(score, file_score, duration=-1):
+def write_score(score, conf_int, file_score, duration=-1):
     """Write score of the k-th task in the given file_score."""
     file_score.write('set1_score: {:.6f}\n'.format(float(score)))
+    file_score.write('conf_int: {:.3f}\n'.format(float(conf_int)))
     file_score.write('Duration: {:.6f}\n'.format(float(duration)))
     
-def write_variance(varr, file_score):
-    """Write variance of accuracies of the meta-test episodes task in the given 
-    file_score."""
-    file_score.write('variance: {:.6f}\n'.format(float(varr)))
-
 def extract_elapsed_time(saved_model_dir):
     """ Extracts elapsed time from the metadata file. It corresponds to the 
     meta-training time, the duration of the ingestion process.
@@ -161,9 +161,26 @@ def scoring(argv):
     del argv
     saved_model_dir = FLAGS.saved_model_dir
     meta_test_dir = FLAGS.meta_test_dir
+    eval_type = FLAGS.evaltype
+    
+    # Making eval type compatible with DataGenerator specs
+    if eval_type == 'train' or eval_type == 'val':
+        data_generator_eval_type = 'train'
+    elif eval_type == 'test':
+        data_generator_eval_type = 'test'
     # Use CodaLab's path `run/input/ref` in parallel with `run/input/res`
     if not os.path.isdir(meta_test_dir): 
         meta_test_dir = os.path.join(saved_model_dir, os.pardir, 'ref')
+
+    # Evaluation type scenario: if meta_test is specified -> act as normal 
+    # scoring on meta_test data
+    if (eval_type == 'train' or eval_type == 'val') and 'meta_test' in meta_test_dir:
+        raise ValueError('Cannot perform train/val evaluation on meta-test data!')
+    #if 'meta_test' not in meta_test_dir:
+    #    if eval_type == 'test':
+    #        meta_test_dir = os.path.join(meta_test_dir, 'meta_test')
+    #    else:
+    #        meta_test_dir = os.path.join(meta_test_dir, 'meta_train')
 
     code_dir = os.path.join(saved_model_dir, 'code_dir')
     score_dir = FLAGS.score_dir
@@ -174,15 +191,22 @@ def scoring(argv):
         gin.parse_config_file(os.path.join(code_dir, 'model.gin'))
 
     logging.info('Ingestion done! Starting scoring process ... ')
-
     logging.info('Creating the meta-test episode generator ... \n ')
     generator = DataGenerator(path_to_records=meta_test_dir,
                             batch_config=None,
                             episode_config=[28, 5, 1, 19],
-                            pool= 'test',
+                            pool= data_generator_eval_type,
                             mode='episode')
     
-    meta_test_dataset = generator.meta_test_pipeline
+    if eval_type == 'test':
+        meta_test_dataset = generator.meta_test_pipeline
+    elif eval_type == 'train':
+        meta_test_dataset = generator.meta_train_pipeline
+    elif eval_type == 'val':
+        meta_test_dataset = generator.meta_valid_pipeline
+    else:
+        raise ValueError('Wrong eval_type : {}'.format(eval_type))
+
     logging.info('Evaluating performance on episodes ... ')
 
     meta_test_dataset = meta_test_dataset.batch(1)
@@ -208,12 +232,19 @@ def scoring(argv):
         logging.debug('Results : {}'.format(results[:20]))
         if(k > nbr_episodes):
             break
+    def mean_confidence_interval(data, confidence=0.95):
+        a = 1.0 * np.array(data)
+        n = len(a)
+        m, se = np.mean(a), scipy.stats.sem(a)
+        h = se * scipy.stats.t.ppf((1 + confidence) / 2., n-1)
+        return m, h
 
+    m, conf_int = mean_confidence_interval(results)
     with open(score_file, 'w') as f :
-        write_score(sum(results)/len(results),
+        write_score(m,
+                    conf_int,
                     f, 
                     extract_elapsed_time(saved_model_dir))
-        write_variance(scipy.std(results), f)
 
     logging.info(('Scoring done! The average score over {} '
         + 'episodes is : {:.3%}').format(nbr_episodes,
