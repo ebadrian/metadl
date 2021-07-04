@@ -60,11 +60,11 @@ done
 
 # Zipping ingestion and scoring program
 cd $PACKAGE_DIR"core/"
-for filename in ingestion scoring; do
+for filename in ingestion scoring parent_scoring; do
   cd $filename;
   echo $filename;
   echo $(pwd)
-  zip -o -r --exclude=*__pycache__* --exclude=*.DS_Store* $ROOT_DIR$DIR$filename"_program" .;
+  zip -o -r --exclude=*__pycache__* --exclude=*.DS_Store* $ROOT_DIR$DIR"metadl_"$filename"_program" .;
   cd ..; 
 done
 
