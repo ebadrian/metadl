@@ -156,7 +156,7 @@ class DataGenerator():
                 min_log_weight=-0.69314718055994529,
                 max_log_weight=0.69314718055994529,
                 ignore_dag_ontology=True,
-                ignore_bilevel_ontology=True,
+                ignore_bilevel_ontology=False,
                 min_examples_in_class=0
                 )
 
@@ -173,7 +173,7 @@ class DataGenerator():
                 min_log_weight=-0.69314718055994529,
                 max_log_weight=0.69314718055994529,
                 ignore_dag_ontology=True,
-                ignore_bilevel_ontology=True,
+                ignore_bilevel_ontology=False,
                 min_examples_in_class=0
                 )
 
@@ -312,5 +312,4 @@ class DataGenerator():
             self.valid_episode_config))
         logging.info('Meta-train batch config : [{}, {}]'.format(
             self.batch_size, self.image_size_batch))
-
 
