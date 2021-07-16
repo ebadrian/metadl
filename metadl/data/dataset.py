@@ -43,7 +43,8 @@ class DataGenerator():
                  episode_config=[28,5,1,19],
                  valid_episode_config=[28,5,1,19],
                  pool='train',
-                 mode='episode'
+                 mode='episode',
+                 use_bilevel_ontology=False
                  ):
         """
         Args:
@@ -74,6 +75,7 @@ class DataGenerator():
         self.valid_episode_config = valid_episode_config
         self.pool = pool
         self.mode = mode
+        self.use_bilevel_ontology = use_bilevel_ontology
 
         if self.pool not in ['train', 'test']:
             raise ValueError(('In DataGenerator, only \'train\' or \'test\' '
@@ -199,7 +201,7 @@ class DataGenerator():
         self.meta_test_pipeline = pipeline.make_one_source_episode_pipeline(
             dataset_spec=self.dataset_spec,
             use_dag_ontology=False,
-            use_bilevel_ontology=False,
+            use_bilevel_ontology=self.use_bilevel_ontology,
             split=learning_spec.Split.TEST,
             episode_descr_config=self.fixed_ways_shots,
             pool=None,
@@ -232,7 +234,7 @@ class DataGenerator():
         self.meta_train_pipeline = pipeline.make_one_source_episode_pipeline(
             dataset_spec=self.dataset_spec,
             use_dag_ontology=False,
-            use_bilevel_ontology=False,
+            use_bilevel_ontology=self.use_bilevel_ontology,
             split=learning_spec.Split.TRAIN,
             episode_descr_config=self.fixed_ways_shots,
             pool=None,
@@ -245,7 +247,7 @@ class DataGenerator():
         self.meta_valid_pipeline = pipeline.make_one_source_episode_pipeline(
             dataset_spec=self.dataset_spec,
             use_dag_ontology=False,
-            use_bilevel_ontology=False,
+            use_bilevel_ontology=self.use_bilevel_ontology,
             split=learning_spec.Split.VALID,
             episode_descr_config=self.fixed_ways_shots_valid,
             pool=None,
@@ -296,7 +298,7 @@ class DataGenerator():
         self.meta_valid_pipeline = pipeline.make_one_source_episode_pipeline(
             dataset_spec=self.dataset_spec,
             use_dag_ontology=False,
-            use_bilevel_ontology=False,
+            use_bilevel_ontology=self.use_bilevel_ontology,
             split=learning_spec.Split.VALID,
             episode_descr_config=self.fixed_ways_shots_valid,
             pool=None,
