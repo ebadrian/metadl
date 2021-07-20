@@ -20,3 +20,6 @@ cp -r ../../meta-dataset .meta-dataset
 docker build -t $USERNAME/$IMAGE:gpu-$VERSION .
 docker tag $USERNAME/$IMAGE:gpu-$VERSION $USERNAME/$IMAGE:gpu-latest
 
+docker build -t $USERNAME/$IMAGE:cpu-$VERSION -f Dockerfile.cpu .
+docker tag $USERNAME/$IMAGE:cpu-$VERSION $USERNAME/$IMAGE:cpu-latest
+
