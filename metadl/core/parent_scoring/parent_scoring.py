@@ -13,6 +13,7 @@ import sys
 import yaml
 import argparse
 import base64
+import metadl
 from shutil import copyfile
 from glob import glob
 import logging
@@ -106,7 +107,7 @@ def read_score(args):
         try:
             with open(score_file, 'r') as f:
                 score_info = yaml.safe_load(f)
-            score_ls.append(float(score_info['score']))
+            score_ls.append(float(score_info['set1_score']))
         except Exception as e:
             logging.exception("Failed to load score in: {}".format(score_dir))
             logging.exception(e)
@@ -172,10 +173,11 @@ def write_curve(curve_ls, args):
 if __name__ == "__main__":
     logger = get_logger(verbosity_level)
     try:
+        VERSION = metadl.__version__
         # Logging version information and description
         logger.info('#' * 50)
-        logger.info("Version: " + VERISION)
-        logger.info(DESCRIPTION)
+        logger.info("Version: " + VERSION)
+        # logger.info(DESCRIPTION)
         logger.info('#' * 50)
 
         # Get input and output dir from input arguments
