@@ -125,48 +125,71 @@ def ingestion(argv):
     gin_path = FLAGS.gin_config_path
     if debug_mode : 
         logging.set_verbosity(logging.DEBUG)
+    if meta_train_dir.endswith('run/input') and\
+       code_dir.endswith('run/program'):
+        logging.debug("Since meta_train_dir ends with 'run/input' and code_dir "
+            "ends with 'run/program', suppose running on the AutoDL instance " +
+            "of CodaLab platform. Modify meta_train_dir to 'run/input_data' "
+            "and code_dir to 'run/submission'. " +
+            "Directory parsing should be more flexible in the code of " +
+            "compute worker: we need explicit directories for " +
+            "dataset_dir and code_dir.")
+        meta_train_dir = meta_train_dir.replace('run/input', 'run/input_data')
+        code_dir = code_dir.replace('run/program', 'run/submission')
 
-    path.append(code_dir)
-    from model import MyMetaLearner 
-
-    check_GPU_availability()
-    # Loading model.gin parameters if specified
-    if(os.path.exists(os.path.join(code_dir, 'model.gin'))):
-        gin.parse_config_file(os.path.join(code_dir, 'model.gin'))
-
-    # Loading data generation config.gin if specified
-    if(os.path.exists(os.path.join(code_dir, 'config.gin'))):
-        gin.parse_config_file(os.path.join(code_dir, 'config.gin'))
-
-    logging.debug('Gin file path : {}'.format(gin_path))
-    logging.debug("Files in meta-train directory are:\n{}".format(
-        os.listdir(meta_train_dir)))
+    logging.debug("Using meta_train_dir={}".format(meta_train_dir))
+    logging.debug("Using code_dir={}".format(code_dir))
+    logging.debug(str(os.listdir(code_dir)))
+    logging.debug("Using model_dir={}".format(model_dir))
+    logging.debug("Using gin_path={}".format(gin_path))
     
-    logging.info('Creating the episode generator ...')
-    # Creating DataGenerator with default params or loaded from config.gin
-    generator = DataGenerator(path_to_records=meta_train_dir)  
+    path.append(code_dir)
+    try:
+        from model import MyMetaLearner 
 
-    logging.info('Generator created !')
-    logging.info("#"*50)
-    meta_learner = MyMetaLearner()
-    logging.info('Starting meta-fit ... \n')
-    learner = meta_learner.meta_fit(generator)
-    logging.info('Meta-fit done.')
+        check_GPU_availability()
+        # Loading model.gin parameters if specified
+        if(os.path.exists(os.path.join(code_dir, 'model.gin'))):
+            gin.parse_config_file(os.path.join(code_dir, 'model.gin'))
 
-    if(not os.path.isdir(model_dir)):
-        os.mkdir(model_dir)
+        # Loading data generation config.gin if specified
+        if(os.path.exists(os.path.join(code_dir, 'config.gin'))):
+            gin.parse_config_file(os.path.join(code_dir, 'config.gin'))
+
+        logging.debug('Gin file path : {}'.format(gin_path))
+        logging.debug("Files in meta-train directory are:\n{}".format(
+            os.listdir(meta_train_dir)))
+        
+        logging.info('Creating the episode generator ...')
+        # Creating DataGenerator with default params or loaded from config.gin
+        generator = DataGenerator(path_to_records=meta_train_dir)  
+
+        logging.info('Generator created !')
+        logging.info("#"*50)
+        meta_learner = MyMetaLearner()
+        logging.info('Starting meta-fit ... \n')
+        learner = meta_learner.meta_fit(generator)
+        logging.info('Meta-fit done.')
+
+        if(not os.path.isdir(model_dir)):
+            os.mkdir(model_dir)
+        
+        logging.info('Saving the learner in {} ...'.format(model_dir))
+        learner.save(model_dir)
+        logging.debug(str(os.listdir(model_dir)))
+        logging.info('Done! \n ')
+    except Exception as e:
+        logging.error("Error encountered :\n" + str(e), exc_info=True)
+
     # Copy the baseline file into model_dir
     model_code_dir = os.path.join(model_dir, 'code_dir')
     if os.path.isdir(model_code_dir):
         shutil.rmtree(model_code_dir)
     shutil.copytree(code_dir, model_code_dir)
 
-    logging.info('Saving the learner in {} ...'.format(model_dir))
-    learner.save(model_dir)
-    logging.info('Done! \n ')
-
 
 if __name__ == '__main__':
     tf.get_logger().setLevel('ERROR')
+    logging.set_verbosity('ERROR')
     app.run(ingestion)
 
