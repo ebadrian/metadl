@@ -15,6 +15,7 @@ from sys import path
 import scipy.stats
 import gin
 import numpy as np 
+import time
 from absl import app
 from absl import flags 
 from absl import logging
@@ -41,6 +42,10 @@ flags.DEFINE_string('score_dir',
 
 flags.DEFINE_string('evaltype',
                     'test',
+                    'Data type on which to perform evaluation. [train, val, test]')
+
+flags.DEFINE_integer('ingestion_time_budget',
+                    7200,
                     'Data type on which to perform evaluation. [train, val, test]')
 
 tf.random.set_seed(1234)
@@ -146,6 +151,18 @@ def process_task(task):
 
     return support_set, query_set, que_labs
 
+
+def list_files(startpath):
+    """List a tree structure of directories and files from startpath"""
+    for root, dirs, files in os.walk(startpath):
+        level = root.replace(startpath, '').count(os.sep)
+        indent = ' ' * 4 * (level)
+        logging.debug('{}{}/'.format(indent, os.path.basename(root)))
+        subindent = ' ' * 4 * (level + 1)
+        for f in files:
+            logging.debug('{}{}'.format(subindent, f))
+
+
 def scoring(argv):
     """ 
     For each task, load and fit the Learner with the support set and evaluate
@@ -162,6 +179,7 @@ def scoring(argv):
     saved_model_dir = FLAGS.saved_model_dir
     meta_test_dir = FLAGS.meta_test_dir
     eval_type = FLAGS.evaltype
+    ingestion_time_budget = FLAGS.ingestion_time_budget
     
     # Making eval type compatible with DataGenerator specs
     if eval_type == 'train' or eval_type == 'val':
@@ -184,6 +202,21 @@ def scoring(argv):
 
     code_dir = os.path.join(saved_model_dir, 'code_dir')
     score_dir = FLAGS.score_dir
+
+    logging.debug("Using meta_test_dir={}".format(meta_test_dir))
+    logging.debug("Using code_dir={}".format(code_dir))
+    logging.debug("Using saved_model_dir={}".format(saved_model_dir))
+    logging.debug("Using score_dir={}".format(score_dir))
+    list_files(os.path.join(score_dir, os.pardir, os.pardir))
+
+    ########################################
+    # IMPORTANT: 
+    # Wait until code_dir is created
+    ########################################
+    t = 0
+    while (not os.path.isdir(code_dir)) and t < ingestion_time_budget:
+        time.sleep(1)
+        t += 1
     
     path.append(code_dir)
     from model import MyLearner
@@ -254,6 +287,7 @@ def scoring(argv):
 if __name__ == '__main__':
     np.random.seed(seed=1234)
     tf.get_logger().setLevel('ERROR')
+    logging.set_verbosity('ERROR')
     app.run(scoring)
 
 
