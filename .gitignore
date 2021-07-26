@@ -5,6 +5,9 @@
 *__pycache__*
 *.egg-info*
 
+# Non-official baselines
+*baselines/MetaDelta*
+
 # Data
 *metadl/starting_kit/data*
 *.zip
@@ -12,7 +15,7 @@
 *.tfrecords
 *dataset_spec.json
 *out.txt
-
+*metadl/core/parent_scoring/test_output*
 # logs 
 *logs*
 
