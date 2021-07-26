@@ -22,7 +22,7 @@ force_submission_to_leaderboard: True   # If false, participants must submit man
 disallow_leaderboard_modifying: True    # If true, submissions cannot be changed
 enable_detailed_results: True           # True if html file written
 competition_docker_image: ebadrian/metadl:gpu-latest # replace that by your own docker
-end_date: 2021-07-20
+end_date: 2021-8-20
 admin_names: guyon, Zhengying, ebadrian, Pavao
 html:
     overview: overview.html
@@ -56,8 +56,8 @@ phases:
     color: green                # Tab colors (white, orange, yellow, green, blue, purple)
     start_date: 2021-06-14
     parent_phasenumber: 1
-    is_scoring_only: True       # if false -> code submission BUT this is an exception
-    execution_time_limit: 3600  # (in sec) must be given when code submission enabled
+    is_scoring_only: False       # if false -> code submission BUT this is an exception
+    execution_time_limit: 10800  # (in sec) must be given when code submission enabled
     max_submissions: 100        # no max
     max_submissions_per_day: 5  # Maximum number of submissions per day, to avoid congestion
     auto_migration: False        # first submission = last one of previous phase
@@ -76,8 +76,8 @@ phases:
     color: green               # Tab colors (white, orange, yellow, green, blue, purple)
     start_date: 2021-06-14
     parent_phasenumber: 1
-    is_scoring_only: True       # if false -> code submission BUT this is an exception
-    execution_time_limit: 3600  # (in sec) must be given when code submission enabled
+    is_scoring_only: False       # if false -> code submission BUT this is an exception
+    execution_time_limit: 10800  # (in sec) must be given when code submission enabled
     max_submissions: 100        # no max
     max_submissions_per_day: 5  # Maximum number of submissions per day, to avoid congestion
     auto_migration: False        # first submission = last one of previous phase
@@ -96,8 +96,8 @@ phases:
     color: green               # Tab colors (white, orange, yellow, green, blue, purple)
     start_date: 2021-06-14
     parent_phasenumber: 1
-    is_scoring_only: True       # if false -> code submission BUT this is an exception
-    execution_time_limit: 3600  # (in sec) must be given when code submission enabled
+    is_scoring_only: False       # if false -> code submission BUT this is an exception
+    execution_time_limit: 10800  # (in sec) must be given when code submission enabled
     max_submissions: 100        # no max
     max_submissions_per_day: 5  # Maximum number of submissions per day, to avoid congestion
     auto_migration: False        # first submission = last one of previous phase
@@ -116,8 +116,8 @@ phases:
     color: green               # Tab colors (white, orange, yellow, green, blue, purple)
     start_date: 2021-06-14
     parent_phasenumber: 1
-    is_scoring_only: True       # if false -> code submission BUT this is an exception
-    execution_time_limit: 3600  # (in sec) must be given when code submission enabled
+    is_scoring_only: False       # if false -> code submission BUT this is an exception
+    execution_time_limit: 10800  # (in sec) must be given when code submission enabled
     max_submissions: 100        # no max
     max_submissions_per_day: 5  # Maximum number of submissions per day, to avoid congestion
     auto_migration: False        # first submission = last one of previous phase
@@ -136,8 +136,8 @@ phases:
     color: green               # Tab colors (white, orange, yellow, green, blue, purple)
     start_date: 2021-06-14
     parent_phasenumber: 1
-    is_scoring_only: True       # if false -> code submission BUT this is an exception
-    execution_time_limit: 3600  # (in sec) must be given when code submission enabled
+    is_scoring_only: False       # if false -> code submission BUT this is an exception
+    execution_time_limit: 10800  # (in sec) must be given when code submission enabled
     max_submissions: 100        # no max
     max_submissions_per_day: 5  # Maximum number of submissions per day, to avoid congestion
     auto_migration: False        # first submission = last one of previous phase
