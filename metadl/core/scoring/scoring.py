@@ -12,13 +12,16 @@ python -m metadl.core.scoring.scoring --meta_test_dir=<path_dataset.meta_test>
 import os 
 from sys import path
 
-import scipy.stats
+import base64
 import gin
-import numpy as np 
+import matplotlib.pyplot as plt
+import numpy as np
+import scipy.stats
 import time
 from absl import app
 from absl import flags 
 from absl import logging
+from glob import glob
 import tensorflow as tf
 
 from metadl.data.dataset import DataGenerator
@@ -163,6 +166,79 @@ def list_files(startpath):
             logging.debug('{}{}'.format(subindent, f))
 
 
+def get_fig_name(task_name):
+    """Helper function for getting learning curve figure name."""
+    fig_name = "learning-curve-" + str(task_name) + ".png"
+    return fig_name
+
+
+def initialize_detailed_results_page(score_dir):
+    """Initialize detailed results page with a message for waiting."""
+    # Create the output directory, if it does not already exist
+    if not os.path.isdir(score_dir):
+        os.mkdir(score_dir)
+    # Initialize detailed_results.html
+    detailed_results_filepath = os.path.join(
+        score_dir,
+        'detailed_results.html'
+    )
+    html_head = '<html><head> <meta http-equiv="refresh" content="5"> ' +\
+                '</head><body><pre>'
+    html_end = '</pre></body></html>'
+    with open(detailed_results_filepath, 'a') as html_file:
+        html_file.write(html_head)
+        html_file.write(
+            "Starting meta-training process... <br> Please be patient. " +
+            "Note that no learning curves will be generated for this " +
+            "particular challenge. The name 'Learning Curve' is a legacy " +
+            "of the AutoDL challenge."
+        )
+        html_file.write(html_end)
+
+
+def plot_detailed_results_figure(results, score_dir, task_name=None):
+    """Plot figure for one task and save to `score_dir`."""
+    fig_name = get_fig_name(task_name)
+    path_to_fig = os.path.join(score_dir, fig_name)
+    mean_acc = np.mean(results)
+    results = np.array(results)
+    bins = np.linspace(0, 1, 101)
+    plt.hist(results, bins=bins, range=(0, 1))
+    plt.axvline(mean_acc, linestyle='dashed', linewidth=2, c='r')
+    plt.text(mean_acc, 6, 'Mean acc: {:.4f}'.format(mean_acc))
+    plt.title("Distribution of accuracies obtained on {} meta-test tasks."\
+        .format(len(results)))
+    plt.savefig(path_to_fig)
+    plt.close()
+
+
+def write_scores_html(score_dir, auto_refresh=False, append=False):
+    filename = 'detailed_results.html'
+    image_paths = sorted(glob(os.path.join(score_dir, '*.png')))
+    if auto_refresh:
+      html_head = '<html><head> <meta http-equiv="refresh" content="5"> ' +\
+                  '</head><body><pre>'
+    else:
+      html_head = """<html><body><pre>"""
+    html_end = '</pre></body></html>'
+    if append:
+      mode = 'a'
+    else:
+      mode = 'w'
+    filepath = os.path.join(score_dir, filename)
+    with open(filepath, mode) as html_file:
+        html_file.write(html_head)
+        for image_path in image_paths:
+          with open(image_path, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read())
+            encoded_string = encoded_string.decode('utf-8')
+            s = '<img src="data:image/png;charset=utf-8;base64,{}"/>'\
+                .format(encoded_string)
+            html_file.write(s + '<br>')
+        html_file.write(html_end)
+    logging.debug("Wrote learning curve page to {}".format(filepath))
+
+
 def scoring(argv):
     """ 
     For each task, load and fit the Learner with the support set and evaluate
@@ -208,6 +284,9 @@ def scoring(argv):
     logging.debug("Using saved_model_dir={}".format(saved_model_dir))
     logging.debug("Using score_dir={}".format(score_dir))
     list_files(os.path.join(score_dir, os.pardir, os.pardir))
+
+    # Initialize detailed results page
+    initialize_detailed_results_page(score_dir)
 
     ########################################
     # IMPORTANT: 
@@ -278,6 +357,13 @@ def scoring(argv):
                     conf_int,
                     f, 
                     extract_elapsed_time(saved_model_dir))
+
+    # Update detailed results page
+    # TODO (@ebadrian): fetch task_name for each task and show it in the generated
+    #   figure if necessary and possible.
+    task_name = None
+    plot_detailed_results_figure(results, score_dir, task_name=task_name)
+    write_scores_html(score_dir)
 
     logging.info(('Scoring done! The average score over {} '
         + 'episodes is : {:.3%}').format(nbr_episodes,
