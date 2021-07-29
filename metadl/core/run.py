@@ -32,11 +32,11 @@ from metadl.data.dataset import DataGenerator
 
 FLAGS = flags.FLAGS
 
-flags.DEFINE_string('meta_dataset_dir', './',
+flags.DEFINE_string('meta_dataset_dir', '../../../omniglot',
                        'Path to the dataset directory containing a meta_train \
                          and meta_test folders.')
 
-flags.DEFINE_string('code_dir', 'baselines/zero/',
+flags.DEFINE_string('code_dir', '../../baselines/zero/',
                        'Path to the directory containing algorithm to use.')
 
 flags.DEFINE_string('gin_config_path', './',
