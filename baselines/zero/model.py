@@ -9,11 +9,17 @@ import tensorflow as tf
 
 from metadl.api.api import MetaLearner, Learner, Predictor
 
+print("GPU usage when importing model.py...")
+os.system('nvidia-smi')
+
 
 class MyMetaLearner(MetaLearner):
 
     def __init__(self):
         super().__init__()
+        print("GPU usage when creating MyMetaLearner...")
+        os.system('nvidia-smi')
+
 
     def meta_fit(self, meta_dataset_generator) -> Learner:
         """
