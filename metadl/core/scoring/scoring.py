@@ -202,7 +202,8 @@ def plot_detailed_results_figure(results, score_dir, task_name=None):
     path_to_fig = os.path.join(score_dir, fig_name)
     mean_acc = np.mean(results)
     results = np.array(results)
-    bins = np.linspace(0, 1, 101)
+    # 95 is to avoid empty bins as we have 95 examples in meta-test
+    bins = np.linspace(0, 1, 95)
     plt.hist(results, bins=bins, range=(0, 1))
     plt.axvline(mean_acc, linestyle='dashed', linewidth=2, c='r')
     plt.text(mean_acc, 6, 'Mean acc: {:.4f}'.format(mean_acc))
