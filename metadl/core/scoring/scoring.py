@@ -87,7 +87,7 @@ def is_one_hot_vector(x, axis=None, keepdims=False):
 
 def write_score(score, conf_int, file_score, duration=-1):
     """Write score of the k-th task in the given file_score."""
-    file_score.write('set1_score: {:.6f}\n'.format(float(score)))
+    file_score.write('score: {:.6f}\n'.format(float(score)))
     file_score.write('conf_int: {:.3f}\n'.format(float(conf_int)))
     file_score.write('Duration: {:.6f}\n'.format(float(duration)))
     
@@ -342,7 +342,7 @@ def scoring(argv):
 
         logging.debug('Score on {} : {}'.format(k, score))
         logging.debug('Results : {}'.format(results[:20]))
-        if(k > nbr_episodes):
+        if(k == nbr_episodes - 1):
             break
     def mean_confidence_interval(data, confidence=0.95):
         a = 1.0 * np.array(data)
@@ -359,8 +359,6 @@ def scoring(argv):
                     extract_elapsed_time(saved_model_dir))
 
     # Update detailed results page
-    # TODO (@ebadrian): fetch task_name for each task and show it in the generated
-    #   figure if necessary and possible.
     task_name = None
     plot_detailed_results_figure(results, score_dir, task_name=task_name)
     write_scores_html(score_dir)

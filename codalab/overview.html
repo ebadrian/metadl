@@ -1,28 +1,7 @@
 <h1>MetaDL Challenge</h1>
-<h3>Brought to you by ChaLearn and Microsoft</h3>
-<p>This challenge aims to find meta-learning approaches effective in the 
-    few-shot learning setting for image classification tasks. These approaches 
-    should be time efficient, that is, meta-learning procedures should not exceed
-    a specific time boundary. More details are available in the Evaluation tab.
-</p>
-
-<p>The competition is divided into 2 phases: Feedback and Final. 
-    In Feedback Phase, the participant can develop their own approach, make 
-    submissions and check out the performance on the leaderboard.
-    In Final Phase, the last valid submission during Feedback Phase is 
-    blind-tested on 5 unseen meta-datasets.
-    During an offline Public Phase, the Omniglot dataset 
-    (to be downloaded in the Get Data section) is provided to allow
-    participants to familiarize with the challenge API.
-</p>
-<p>
-    Participants need to train a meta-learner on a meta-train set and produce 
-    a learner (a machine learning algorithm), which will be used to 
-    train on classification tasks generated from the meta-test set and evaluated.
-    A participant's submission will be evaluated by the capacity of this learner
-    to quickly adapt to new unseen tasks. Please refer to the evaluation section 
-    for more details.
-</p>
-<p>Instructions and a starting kit are provided in 
-    <a href="https://github.com/ebadrian/metadl/tree/neurips2021">the dedicated GitHub repository</a>.
-</p> 
+<h3>Brought to you by ChaLearn, Microsoft and Google</h3>
+<p>This challenge aims to find meta-learning approaches effective in the few-shot learning setting for image classification tasks. These approaches should be time efficient, that is, meta-learning procedures should not exceed a specific time boundary. More details are available in the Evaluation tab.</p>
+<p>The competition is divided into 2 phases: Feedback and Final. This website is the Feedback phase portal. In Feedback Phase, the participant can develop their own approach, make submissions and check out the performance on the leaderboard for each dataset. In Final Phase, the last valid submission during Feedback Phase is blind-tested on 5 unseen meta-datasets. Results in Final Phase are used for determining the winners.</p>
+<p>Participants need to submit their code through this platform. More specifically, the submitted code must respect a specific API that is detailled in the notebook tutorial. Following this API, participants will first "meta-train" a meta-learner resulting in a learner. This learner can then be trained on an unseen meta-test task and evaluated on unlabelled examples of the same task. A participant's submission will be evaluated by the capacity of this learner to quickly adapt to new unseen tasks. Please refer to the evaluation section for more details.</p>
+<p>Instructions and a starting kit are provided in <a href="https://github.com/ebadrian/metadl/tree/neurips2021">the dedicated GitHub repository</a>.</p>
+<p>For any questions, contact the organizers via: <a href="mailto:metadl@chalearn.org">metadl@chalearn.org</a></p>

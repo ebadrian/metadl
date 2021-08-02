@@ -1,1 +1,2 @@
-command: python -m metadl.core.scoring.scoring --meta_test_dir=$hidden --saved_model_dir=$predictions --score_dir=$output
+command: python $program/scoring.py --meta_test_dir=$hidden --saved_model_dir=$predictions --score_dir=$output
+#command: python -m metadl.core.scoring.scoring --meta_test_dir=$hidden --saved_model_dir=$predictions --score_dir=$output
