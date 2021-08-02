@@ -306,7 +306,7 @@ def scoring(argv):
     logging.info('Creating the meta-test episode generator ... \n ')
     generator = DataGenerator(path_to_records=meta_test_dir,
                             batch_config=None,
-                            episode_config=[28, 5, 1, 19],
+                            episode_config=[128, 5, 1, 19],
                             pool= data_generator_eval_type,
                             mode='episode')
     
