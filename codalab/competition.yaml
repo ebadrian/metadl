@@ -22,7 +22,7 @@ force_submission_to_leaderboard: True   # If false, participants must submit man
 disallow_leaderboard_modifying: True    # If true, submissions cannot be changed
 enable_detailed_results: True           # True if html file written
 competition_docker_image: ebadrian/metadl:gpu-latest # replace that by your own docker
-end_date: 2021-9-2
+end_date: 2021-9-02
 admin_names: guyon, Zhengying, ebadrian, Pavao
 html:
     overview: overview.html
@@ -37,10 +37,10 @@ phases:
 # ----------------------          ALL DATASETS PHASE      ------------------------
   1:
     phasenumber: 1
-    label: "All datasets"
-    description: "Please make submissions by clicking on following 'Submit' button. Then you can view the submission results of your algorithm on each dataset in corresponding tab (Dataset 1, Dataset 2, etc)."
+    label: "All meta-datasets"
+    description: "Please make submissions by clicking on following 'Submit' button. Then you can view the submission results of your algorithm on each meta-dataset in corresponding tab (Meta-dataset 1, Meta-dataset 2, etc)."
     color: orange # Tab colors (white, orange, yellow, green, blue, purple)
-    start_date: 2021-8-2
+    start_date: 2021-8-02
     max_submissions: 100
     max_submissions_per_day: 5
     auto_migration: False
@@ -51,10 +51,10 @@ phases:
 
   2:
     phasenumber: 2
-    label: "Dataset 1"
-    description: "This tab contains submission results of your algorithm on Dataset 1."
+    label: "Meta-dataset 1"
+    description: "This tab contains submission results of your algorithm on Meta-dataset 1."
     color: green                # Tab colors (white, orange, yellow, green, blue, purple)
-    start_date: 2021-8-2
+    start_date: 2021-8-02
     parent_phasenumber: 1
     is_scoring_only: False       # if false -> code submission BUT this is an exception
     execution_time_limit: 3600  # (in sec) must be given when code submission enabled
@@ -71,10 +71,10 @@ phases:
 
   3:
     phasenumber: 3              # NO submission, auto-migration
-    label: "Dataset 2"
-    description: "This tab contains submission results of your algorithm on Dataset 2."
+    label: "Meta-dataset 2"
+    description: "This tab contains submission results of your algorithm on Meta-dataset 2."
     color: green               # Tab colors (white, orange, yellow, green, blue, purple)
-    start_date: 2021-8-2
+    start_date: 2021-8-02
     parent_phasenumber: 1
     is_scoring_only: False       # if false -> code submission BUT this is an exception
     execution_time_limit: 3600  # (in sec) must be given when code submission enabled
@@ -91,10 +91,10 @@ phases:
 
   4:
     phasenumber: 4              # NO submission, auto-migration
-    label: "Dataset 3"
-    description: "This tab contains submission results of your algorithm on Dataset 3."
+    label: "Meta-dataset 3"
+    description: "This tab contains submission results of your algorithm on Meta-dataset 3."
     color: green               # Tab colors (white, orange, yellow, green, blue, purple)
-    start_date: 2021-8-2
+    start_date: 2021-8-02
     parent_phasenumber: 1
     is_scoring_only: False       # if false -> code submission BUT this is an exception
     execution_time_limit: 3600  # (in sec) must be given when code submission enabled
@@ -111,10 +111,10 @@ phases:
 
   5:
     phasenumber: 5              # NO submission, auto-migration
-    label: "Dataset 4"
-    description: "This tab contains submission results of your algorithm on Dataset 4."
+    label: "Meta-dataset 4"
+    description: "This tab contains submission results of your algorithm on Meta-dataset 4."
     color: green               # Tab colors (white, orange, yellow, green, blue, purple)
-    start_date: 2021-8-2
+    start_date: 2021-8-02
     parent_phasenumber: 1
     is_scoring_only: False       # if false -> code submission BUT this is an exception
     execution_time_limit: 3600  # (in sec) must be given when code submission enabled
@@ -131,10 +131,10 @@ phases:
 
   6:
     phasenumber: 6              # NO submission, auto-migration
-    label: "Dataset 5"
-    description: "This tab contains submission results of your algorithm on Dataset 5."
+    label: "Meta-dataset 5"
+    description: "This tab contains submission results of your algorithm on Meta-dataset 5."
     color: green               # Tab colors (white, orange, yellow, green, blue, purple)
-    start_date: 2021-8-2
+    start_date: 2021-8-02
     parent_phasenumber: 1
     is_scoring_only: False       # if false -> code submission BUT this is an exception
     execution_time_limit: 3600  # (in sec) must be given when code submission enabled
