@@ -40,7 +40,7 @@ phases:
     label: "All datasets"
     description: "Please make submissions by clicking on following 'Submit' button. Then you can view the submission results of your algorithm on each dataset in corresponding tab (Dataset 1, Dataset 2, etc)."
     color: orange # Tab colors (white, orange, yellow, green, blue, purple)
-    start_date: 2021-08-02
+    start_date: 2021-8-2
     max_submissions: 100
     max_submissions_per_day: 5
     auto_migration: False
@@ -54,7 +54,7 @@ phases:
     label: "Dataset 1"
     description: "This tab contains submission results of your algorithm on Dataset 1."
     color: green                # Tab colors (white, orange, yellow, green, blue, purple)
-    start_date: 2021-08-02
+    start_date: 2021-8-2
     parent_phasenumber: 1
     is_scoring_only: False       # if false -> code submission BUT this is an exception
     execution_time_limit: 3600  # (in sec) must be given when code submission enabled
@@ -74,7 +74,7 @@ phases:
     label: "Dataset 2"
     description: "This tab contains submission results of your algorithm on Dataset 2."
     color: green               # Tab colors (white, orange, yellow, green, blue, purple)
-    start_date: 2021-08-02
+    start_date: 2021-8-2
     parent_phasenumber: 1
     is_scoring_only: False       # if false -> code submission BUT this is an exception
     execution_time_limit: 3600  # (in sec) must be given when code submission enabled
@@ -94,7 +94,7 @@ phases:
     label: "Dataset 3"
     description: "This tab contains submission results of your algorithm on Dataset 3."
     color: green               # Tab colors (white, orange, yellow, green, blue, purple)
-    start_date: 2021-08-02
+    start_date: 2021-8-2
     parent_phasenumber: 1
     is_scoring_only: False       # if false -> code submission BUT this is an exception
     execution_time_limit: 3600  # (in sec) must be given when code submission enabled
@@ -114,7 +114,7 @@ phases:
     label: "Dataset 4"
     description: "This tab contains submission results of your algorithm on Dataset 4."
     color: green               # Tab colors (white, orange, yellow, green, blue, purple)
-    start_date: 2021-08-02
+    start_date: 2021-8-2
     parent_phasenumber: 1
     is_scoring_only: False       # if false -> code submission BUT this is an exception
     execution_time_limit: 3600  # (in sec) must be given when code submission enabled
@@ -134,7 +134,7 @@ phases:
     label: "Dataset 5"
     description: "This tab contains submission results of your algorithm on Dataset 5."
     color: green               # Tab colors (white, orange, yellow, green, blue, purple)
-    start_date: 2021-08-02
+    start_date: 2021-8-2
     parent_phasenumber: 1
     is_scoring_only: False       # if false -> code submission BUT this is an exception
     execution_time_limit: 3600  # (in sec) must be given when code submission enabled
