@@ -107,7 +107,7 @@ def read_score(args):
         try:
             with open(score_file, 'r') as f:
                 score_info = yaml.safe_load(f)
-            score_ls.append(float(score_info['set1_score']))
+            score_ls.append(float(score_info['score']))
         except Exception as e:
             logging.exception("Failed to load score in: {}".format(score_dir))
             logging.exception(e)

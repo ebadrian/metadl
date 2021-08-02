@@ -87,7 +87,7 @@ def is_one_hot_vector(x, axis=None, keepdims=False):
 
 def write_score(score, conf_int, file_score, duration=-1):
     """Write score of the k-th task in the given file_score."""
-    file_score.write('set1_score: {:.6f}\n'.format(float(score)))
+    file_score.write('score: {:.6f}\n'.format(float(score)))
     file_score.write('conf_int: {:.3f}\n'.format(float(conf_int)))
     file_score.write('Duration: {:.6f}\n'.format(float(duration)))
     

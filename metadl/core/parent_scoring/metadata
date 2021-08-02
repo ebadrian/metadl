@@ -1,1 +1,2 @@
-command: python -m metadl.core.parent_scoring.parent_scoring --input_dir=$input --output_dir=$output
+command: python $program/score.py --input_dir=$input --output_dir=$output
+#command: python -m metadl.core.parent_scoring.parent_scoring --input_dir=$input --output_dir=$output
