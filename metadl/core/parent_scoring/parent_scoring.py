@@ -160,7 +160,7 @@ def write_curve(curve_ls, args):
                 with open(image_path, "rb") as image_file:
                     encoded_string = base64.b64encode(image_file.read())
                     encoded_string = encoded_string.decode('utf-8')
-                    t = '<font size="7">Dataset ' + str(id+1) + '.</font>'
+                    t = '<font size="7">Meta-dataset ' + str(id+1) + '.</font>'
                     html_file.write(t + '<br>')
                     s = '<img src="data:image/png;charset=utf-8;base64,%s"/>'%encoded_string
                     html_file.write(s + '<br>')
