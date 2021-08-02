@@ -21,7 +21,7 @@ pip install -e .
 pip install -r requirements.txt
 
 # Installing meta-dataset package
-cd ../meta-dataset
+cd ../meta_dataset
 #cp ../metadl/misc/setup.py .
 pip install -e .
 

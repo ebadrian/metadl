@@ -9,7 +9,7 @@ This repository contains the code associated to the Meta-Learning challenge orga
 - Joaquin Vanschoren (Eindhoven University, the Netherlands)
 - Lisheng Sun (UPSud, France)
 
-[CodaLab competition link](https://competitions.codalab.org/competitions/26638#learn_the_details)
+[CodaLab competition link](https://autodl.lri.fr/competitions/209?secret_key=6af37e0f-a869-429f-86a5-0f129d41219f)
 
 ## Outline 
 [I - Overview](#i---overview)
@@ -21,7 +21,7 @@ This repository contains the code associated to the Meta-Learning challenge orga
 ---
 
 ## I - Overview
-This is the official repository of the [Meta-Learning workshop co-hosted competition for AAAI 2021](https://aaai.org/Conferences/AAAI-21/ws21workshops/#ws18). 
+This is the official repository of the [MetaDL competition for the NeurIPS 2021 competition track](https://neurips.cc/Conferences/2021/CompetitionTrack). 
 
 The competition focus on few-shot learning for image classification. This is an **online competition**, i.e. you need to provide your submission as raw Python code that will be ran on the CodaLab platform. The code is designed to be a module and to be flexible and allows participants to any type of meta-learning algorithms.
 
