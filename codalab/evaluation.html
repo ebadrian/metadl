@@ -1,31 +1,6 @@
 <h1>MetaDL Evaluation</h1>
-<p>
-    
-    For both Feedback Phase and Final Phase, the performance of a meta-learning 
-    algorithm is measured 
-    through the evaluation of 600 episodes at <strong>meta-test</strong> time. 
-    The participant needs to implement a <code>MyMetaLearner</code> class that can meta-fit
-    all of the 5 meta-train sets and produce a <code>Learner</code> object. Then
-     each <code>Learner</code> can fit can fit a support set (a.k.a training set),
-     generated from the associated meta-test set, and 
-    produce a <code>Predictor</code>. For each pair of meta-datasets, the accuracy of these predictors on 
-    each query set (or test set) is then averaged to produce a final score. 
-    Finally, we rank submissions with the average of the 5 different scores associated 
-    to each meta-dataset.
-    In Feedback Phase, this rank is used to form a leaderboard. In Final Phase,
-    this rank is used as the criterion for deciding winners (and a leadberboard
-    will also be released).
-</br>
-</br>
-    One important aspect of the challenge is that submissions must produce
-    a <code>Learner</code> within 2 hours of compute power. The GPU available
-    is a <strong>Tesla M60</strong>.
-</p>
+<p>For both Feedback Phase and Public Phase, the performance of a meta-learning algorithm is measured through the evaluation of 600 episodes at <strong>meta-test</strong> time. The participant needs to implement a <code>MyMetaLearner</code> class that can meta-fit a meta-train set and produce a <code>Learner</code> object, which in turn can fit any support set (a.k.a training set), generated from a meta-test set, and produce a <code>Predictor</code>. The accuracy of these predictors on each query set (or test set) is then averaged to produce a final score. In Feedback Phase, this score is used to form a leaderboard. In Final Phase, this score is used as the criterion for deciding winners (and a leadberboard will also be released). One important aspect of the challenge is that submissions must produce a <code>Learner</code> within 1 hour for each meta-dataset (5 hours in total for all 5 meta-datasets). Each submission has access to 4 GPU <strong>Tesla M60&nbsp;</strong>for this amount of time.</p>
 <h3>Episodes at meta-test time</h3>
-<p>
-    We use the 5-way 1-shot few-shot learning setting.</br>
-</br>
-    <strong>Support set:</strong> 5 classes and 1 example per class 
-    (labelled examples) <br /><strong>Query set:</strong> 5 classes and a 
-    <strong>varying number</strong> of examples per class (unlabelled examples)
-</p>
+<p>For each meta-dataset, we use the 5-way 1-shot few-shot learning setting:</p>
+<p><strong>Support set:</strong> 5 classes and 1 example per class (labelled examples) <br /><strong>Query set:</strong> 5 classes and a <strong>varying number</strong> of examples per class (unlabelled examples)</p>
+<p>After we compute the accuracy for all 5 meta-datasets, the&nbsp;<strong>overall ranking</strong>&nbsp;is used as the final score for evaluation and will be used in the learderboard. It is computed by averaging the ranks (among all participants) of accuracies obtained on the 5 meta-datasets.</p>

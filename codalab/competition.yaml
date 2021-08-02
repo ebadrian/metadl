@@ -22,7 +22,7 @@ force_submission_to_leaderboard: True   # If false, participants must submit man
 disallow_leaderboard_modifying: True    # If true, submissions cannot be changed
 enable_detailed_results: True           # True if html file written
 competition_docker_image: ebadrian/metadl:gpu-latest # replace that by your own docker
-end_date: 2021-8-20
+end_date: 2021-9-2
 admin_names: guyon, Zhengying, ebadrian, Pavao
 html:
     overview: overview.html
