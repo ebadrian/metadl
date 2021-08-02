@@ -25,7 +25,7 @@ In the **Jupyter Notebook** `tutorial.ipynb` you will learn the following things
 ### Download the starting kit
 You should clone the whole **metadl** repository first by running the following command in the empty root directory of your project :
 ```
-git clone https://github.com/ebadrian/metadl
+git clone https://github.com/ebadrian/metadl && git checkout neurips2021
 ```
 We provide 2 ways of installing the necessary dependencies :
 * [via Conda environment](#set-up-the-environment-with-anaconda)
