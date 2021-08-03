@@ -1,5 +1,8 @@
 """ This script contains the implementation of the MAML algorithms designed by 
 Chelsea Finn et al. (https://arxiv.org/pdf/1703.03400).
+Implementation inspired from the following github repo: 
+https://github.com/facebookresearch/higher/blob/master/examples/maml-omniglot.py
+
 Terminology:
 ------------
 Support set : a set of training examples 
@@ -189,7 +192,7 @@ class MyMetaLearner(MetaLearner):
         for epoch in range(self.meta_iterations):
             if epoch % 20 == 0 : 
                 tmp_learner = MyLearner(self.meta_learner)
-                tmp_learner.save(os.path.join('trained_models/feedback/maml_torch/models', 'epoch{}'.format(epoch)))
+                #tmp_learner.save(os.path.join('trained_models/feedback/maml_torch/models', 'epoch{}'.format(epoch)))
             self.train(mtrain_iterator, self.meta_learner, self.device, self.meta_opt, epoch, log)
 
 
@@ -198,7 +201,7 @@ class MyMetaLearner(MetaLearner):
     def train(self, db, net, device, meta_opt, epoch, log):
         net.train()
         #n_train_iter = db.x_train.shape[0] // db.batchsz
-        n_train_iter = 10
+        n_train_iter = 1
         for batch_idx in range(n_train_iter):
             start_time = time.time()
             # Sample a batch of support and query images and labels.
@@ -210,12 +213,10 @@ class MyMetaLearner(MetaLearner):
             
             #task_num = self.meta_batch_size
             task_num, setsz, c_, h, w = x_spt.size()
-            #logging.info('Task num: {} | Setsz: {} | c_ : {} | h : {} | w : {}'.format(task_num, setsz, c_, h, w))
+            logging.debug('Task num: {} | Setsz: {} | c_ : {} | h : {} | w : {}'.format(task_num, setsz, c_, h, w))
             querysz = x_qry.size(1)
 
-            #logging.info(f'sup_x : {x_spt[0].shape} | sup_y : {y_spt[0].shape} | qry_x : {x_qry[0].shape} | qry_y : {y_qry[0].shape}')
-            # TODO: Maybe pull this out into a separate module so it
-            # doesn't have to be duplicated between `train` and `test`?
+            logging.debug(f'sup_x : {x_spt[0].shape} | sup_y : {y_spt[0].shape} | qry_x : {x_qry[0].shape} | qry_y : {y_qry[0].shape}')
 
             # Initialize the inner optimizer to adapt the parameters to
             # the support set.
@@ -283,7 +284,7 @@ class MyLearner(Learner):
                 neural_net = None,
                 num_epochs=3,
                 lr=0.1,
-                img_size=32):
+                img_size=128):
         """
         Args:
             neural_net : a keras.Sequential object. A neural network model to 
@@ -367,7 +368,7 @@ class MyLearner(Learner):
         """
 
         if(os.path.isdir(model_dir) != True):
-            os.mkdir(model_dir)
+            os.makedirs(model_dir, exist_ok=True)
             #raise ValueError(('The model directory provided is invalid. Please'
             #    + ' check that its path is valid.'))
 

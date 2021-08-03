@@ -1,11 +1,11 @@
 # MetaLearner parameters
-MyMetaLearner.img_size = 28
+MyMetaLearner.img_size = 128
 MyMetaLearner.meta_batch_size = 32
-MyMetaLearner.meta_iterations = 200
+MyMetaLearner.meta_iterations = 120
 MyMetaLearner.N_ways = 5
 
 # Learner parameters 
-MyLearner.img_size = 28
+MyLearner.img_size = 128
 MyLearner.num_epochs = 3
 MyLearner.lr = 0.1
 
