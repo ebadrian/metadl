@@ -46,6 +46,11 @@ flags.DEFINE_boolean('debug_mode',
                     'Whether to use debug verbosity.')
 
 tf.random.set_seed(1234)
+gpus = tf.config.experimental.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(gpus[0], True)
+tf.config.experimental.set_memory_growth(gpus[1], True)
+tf.config.experimental.set_memory_growth(gpus[2], True)
+tf.config.experimental.set_memory_growth(gpus[3], True)
 
 def get_gin_path():
     """ Get the absolute path of a gin file in a compute_worker. This method is 
@@ -96,19 +101,6 @@ def show_dir(d, n_bytes=100, depth=1):
         if depth > 1 and os.path.isdir(filepath):
             show_dir(filepath, n_bytes=n_bytes, depth=depth-1)
 
-def check_GPU_availability():
-    """ This function is meant to test if the nvidia GPU is working properly.
-    """
-    cmd_check_gpu = 'nvidia-smi' # nvidia cuda from host
-    cmd_check_cudnn = 'nvcc --version' # nvidia toolkit version
-    os.system(cmd_check_gpu)
-    os.system(cmd_check_cudnn)
-
-    if tf.test.gpu_device_name(): 
-        logging.info('Default GPU Device : {}'.format(
-            tf.test.gpu_device_name()))
-    else :
-        logging.info('Tensorflow GPU version is not available.')
 
 def ingestion(argv):
     """The ingestion process achieves 2 things. First, it uses the meta-fit() 
@@ -147,7 +139,6 @@ def ingestion(argv):
     try:
         from model import MyMetaLearner 
 
-        check_GPU_availability()
         # Loading model.gin parameters if specified
         if(os.path.exists(os.path.join(code_dir, 'model.gin'))):
             gin.parse_config_file(os.path.join(code_dir, 'model.gin'))
