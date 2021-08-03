@@ -40,8 +40,8 @@ class DataGenerator():
     def __init__(self,
                  path_to_records,
                  batch_config=None,
-                 episode_config=[28,5,1,19],
-                 valid_episode_config=[28,5,1,19],
+                 episode_config=[128,5,1,19],
+                 valid_episode_config=[128,5,1,19],
                  pool='train',
                  mode='episode',
                  use_bilevel_ontology=False
@@ -76,6 +76,9 @@ class DataGenerator():
         self.pool = pool
         self.mode = mode
         self.use_bilevel_ontology = use_bilevel_ontology
+        self.read_buffer_size_bytes = 1048576
+        self.num_prefetch = 2
+        self.shuffle_buffer_size = 3000
 
         if self.pool not in ['train', 'test']:
             raise ValueError(('In DataGenerator, only \'train\' or \'test\' '
@@ -205,9 +208,9 @@ class DataGenerator():
             split=learning_spec.Split.TEST,
             episode_descr_config=self.fixed_ways_shots,
             pool=None,
-            shuffle_buffer_size=3000,
-            read_buffer_size_bytes=None,
-            num_prefetch=0,
+            shuffle_buffer_size=self.shuffle_buffer_size,
+            read_buffer_size_bytes=self.read_buffer_size_bytes,
+            num_prefetch=self.num_prefetch,
             image_size=self.episode_config[0],
             num_to_take=None
         )
@@ -238,9 +241,9 @@ class DataGenerator():
             split=learning_spec.Split.TRAIN,
             episode_descr_config=self.fixed_ways_shots,
             pool=None,
-            shuffle_buffer_size=3000,
-            read_buffer_size_bytes=None,
-            num_prefetch=0,
+            shuffle_buffer_size=self.shuffle_buffer_size,
+            read_buffer_size_bytes=self.read_buffer_size_bytes,
+            num_prefetch=self.num_prefetch,
             image_size=self.episode_config[0],
             num_to_take=None
         )
@@ -251,9 +254,9 @@ class DataGenerator():
             split=learning_spec.Split.VALID,
             episode_descr_config=self.fixed_ways_shots_valid,
             pool=None,
-            shuffle_buffer_size=3000,
-            read_buffer_size_bytes=None,
-            num_prefetch=0,
+            shuffle_buffer_size=self.shuffle_buffer_size,
+            read_buffer_size_bytes=self.read_buffer_size_bytes,
+            num_prefetch=self.num_prefetch,
             image_size=self.valid_episode_config[0],
             num_to_take=None
         )
@@ -289,9 +292,9 @@ class DataGenerator():
             split=learning_spec.Split.TRAIN,
             batch_size= self.batch_size,
             pool=None,
-            shuffle_buffer_size=3000,
-            read_buffer_size_bytes=None,
-            num_prefetch=0,
+            shuffle_buffer_size=self.shuffle_buffer_size,
+            read_buffer_size_bytes=self.read_buffer_size_bytes,
+            num_prefetch=self.num_prefetch,
             image_size=self.image_size_batch,
             num_to_take=None
         )
@@ -302,9 +305,9 @@ class DataGenerator():
             split=learning_spec.Split.VALID,
             episode_descr_config=self.fixed_ways_shots_valid,
             pool=None,
-            shuffle_buffer_size=3000,
-            read_buffer_size_bytes=None,
-            num_prefetch=0,
+            shuffle_buffer_size=self.shuffle_buffer_size,
+            read_buffer_size_bytes=self.read_buffer_size_bytes,
+            num_prefetch=self.num_prefetch,
             image_size=self.valid_episode_config[0],
             num_to_take=None
         )
