@@ -1,12 +1,12 @@
 # MetaLearner parameters
-MyMetaLearner.img_size = 28
-MyMetaLearner.N_ways = 60
+MyMetaLearner.img_size = 128
+MyMetaLearner.N_ways = 20
 MyMetaLearner.K_shots = 1
-MyMetaLearner.embedding_dim = 64 # Omniglot 
-MyMetaLearner.meta_iterations = 5
+MyMetaLearner.embedding_dim = 512 
+MyMetaLearner.meta_iterations = 550
 
 # Learner parameters
 MyLearner.N_ways = 5
 MyLearner.K_shots = 1
-MyLearner.img_size = 28
-MyLearner.embedding_dimension = 64 # Omniglot
+MyLearner.img_size = 128
+MyLearner.embedding_dimension = 512
