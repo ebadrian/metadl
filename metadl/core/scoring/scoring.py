@@ -239,6 +239,22 @@ def write_scores_html(score_dir, auto_refresh=False, append=False):
         html_file.write(html_end)
     logging.debug("Wrote learning curve page to {}".format(filepath))
 
+def set_device():
+    """Automatically chooses the right device to run on TF.
+    Reason: Conflict with 2 different processes running TF (metric from ingestion
+    is cached when scoring starts).
+    Returns:
+        str: device identifier which is best suited 
+            (most free GPU, or CPU in case GPUs are unavailable)
+    """
+    gpus = tf.config.list_physical_devices(device_type="GPU")
+    dev = None
+    try:
+      if gpus is not None:
+        current_device = gpus[-1].name[-1]
+        dev = f"GPU:{current_device}"
+    finally:
+      return dev
 
 def scoring(argv):
     """ 
@@ -307,7 +323,7 @@ def scoring(argv):
     logging.info('Creating the meta-test episode generator ... \n ')
     generator = DataGenerator(path_to_records=meta_test_dir,
                             batch_config=None,
-                            episode_config=[128, 5, 1, 19],
+                            episode_config=[128, 5, 5, 19],
                             pool= data_generator_eval_type,
                             mode='episode')
     
@@ -330,7 +346,14 @@ def scoring(argv):
         os.mkdir(score_dir)
     score_file = os.path.join(score_dir, 'scores.txt')
     results = []
-    metric = tf.metrics.SparseCategoricalAccuracy()
+
+    dev = set_device()
+    if dev is not None:
+        with tf.device(f'/device:{dev}'):
+            metric = tf.metrics.SparseCategoricalAccuracy(name="test_sparse_categorical_accuracy")
+    else:
+        metric = tf.metrics.SparseCategoricalAccuracy(name="test_sparse_categorical_accuracy")
+
     nbr_episodes = 600
 
     for k , task in enumerate(meta_test_dataset) :
@@ -372,7 +395,7 @@ def scoring(argv):
 if __name__ == '__main__':
     np.random.seed(seed=1234)
     tf.get_logger().setLevel('ERROR')
-    logging.set_verbosity('ERROR')
+    logging.set_verbosity('INFO')
     app.run(scoring)
 
 
