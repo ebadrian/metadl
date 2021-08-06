@@ -74,7 +74,7 @@ def main(argv):
     model_dir = FLAGS.model_dir
     score_dir = FLAGS.score_dir
     open_browser = FLAGS.open_browser
-    
+    omniglot_query_size = 15 # Compatible with 5-shot (max = 20 examples)
     remove_dir(model_dir)
     remove_dir(score_dir)
     meta_train_dir = os.path.join(meta_dataset_dir, 'meta_train')
@@ -88,16 +88,20 @@ def main(argv):
                                                 model_dir)
 
     command_scoring = "python -m metadl.core.scoring.scoring --meta_test_dir={} \
-         --model_dir={} --score_dir={}".format(
+         --model_dir={} --score_dir={} --query_size_per_class={}".format(
                                             meta_test_dir,
                                             model_dir,
-                                            score_dir)
+                                            score_dir,
+                                            omniglot_query_size)
 
     cmd_ing = shlex.split(command_ingestion)
     cmd_sco = shlex.split(command_scoring)
 
-    subprocess.call(cmd_ing)
-    subprocess.call(cmd_sco)
+    p1 = subprocess.Popen(cmd_ing)
+    p1.wait()
+    p2 = subprocess.Popen(cmd_sco)
+    p2.wait()
+    logging.info('Run finished ! ')
 
 if __name__ == '__main__':
     app.run(main)
