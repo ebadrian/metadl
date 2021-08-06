@@ -106,32 +106,12 @@ class MyMetaLearner(MetaLearner):
 
         self.device = torch.device('cuda:1')
         self.meta_learner.to(device=self.device)
-        self. meta_opt = optim.Adam(self.meta_learner.parameters(), lr=1e-3)
-
-
-        # Writer 
-        #self.current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-        #self.train_log_dir = ('logs/gradient_tape/' + 
-        #                    self.current_time +
-        #                    '/train')
-        #self.test_log_dir = ('logs/gradient_tape/' +
-        #                    self.current_time +
-        #                    '/test')
-        #self.train_summary_writer = tf.summary.create_file_writer(
-        #                            self.train_log_dir)
-#
-        #self.train_loss = tf.keras.metrics.Mean(name = 'train_loss')
-        #self.train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(
-        #                    name = 'train_accuracy')
-        #self.test_loss = tf.keras.metrics.Mean(name = 'test_loss')
-        #self.test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(
-        #                    name = 'test_accuracy')
-
+        self.meta_opt = optim.Adam(self.meta_learner.parameters(), lr=1e-3)
 
     def dataloader(self, dataset_episodic):
         to_torch_labels = lambda a: torch.from_numpy(a.numpy()).long()
-        to_torch_imgs = lambda a: torch.from_numpy(np.transpose(a.numpy(), (0, 3, 1, 2)))
-        # 2
+        to_torch_imgs = lambda a: torch.from_numpy(
+            np.transpose(a.numpy(), (0, 3, 1, 2)))
         
         def data_loader(n_batches):
             for i, (e, _) in enumerate(dataset_episodic):
@@ -143,9 +123,11 @@ class MyMetaLearner(MetaLearner):
 
         datal = data_loader(n_batches=1)
         for i, batch in enumerate(datal):
-            #3
-            data_support, labels_support, data_query, labels_query = [x.to(device=self.device) for x in batch]
-            logging.info('Supp imgs: {} | Supp labs : {} | Query imgs : {} | Query labs \n \n'.format(data_support.shape, labels_support.shape, data_query.shape, labels_query.shape))
+            data_support, labels_support, data_query, labels_query = [
+                x.to(device=self.device) for x in batch]
+            logging.info(
+                'Supp imgs: {} | Supp labs : {} | Query imgs : {} | Query labs \n \n'.format(
+                    data_support.shape, labels_support.shape, data_query.shape, labels_query.shape))
 
 
     def process_task(self, batch):
@@ -154,7 +136,8 @@ class MyMetaLearner(MetaLearner):
         sup_imgs : [batch_idx, nbr_imgs, H, W, C]
         """
         to_torch_labels = lambda a: torch.from_numpy(a.numpy()).long()
-        to_torch_imgs = lambda a: torch.from_numpy(np.transpose(a.numpy(), (0, 1, 4, 2, 3)))
+        to_torch_imgs = lambda a: torch.from_numpy(
+            np.transpose(a.numpy(), (0, 1, 4, 2, 3)))
         return (to_torch_imgs(batch[0]), to_torch_labels(batch[1]),
                     to_torch_imgs(batch[3]), to_torch_labels(batch[4]))
 
@@ -174,26 +157,13 @@ class MyMetaLearner(MetaLearner):
         meta_valid_dataset = meta_dataset_generator.meta_valid_pipeline
         meta_train_dataset = meta_train_dataset.batch(32)
         mtrain_iterator = meta_train_dataset.__iter__()
-
-        #batch = next(mtrain_iterator)
-        #logging.info('len batch : {}'.format(len(batch)))
-        #batch_1 = batch[0]
-        #logging.info('len batch 1: {}'.format(len(batch_1)))
-        #batch_1 = self.process_task(batch_1)
-        #data_support, labels_support, data_query, labels_query = [x.to(device=self.device) for x in batch_1]
-        #logging.info('Supp imgs: {} | Supp labs : {} | Query imgs : {} | Query labs \n \n'.format(data_support.shape, labels_support.shape, data_query.shape, labels_query.shape))
-
         
-        #logging.info('Batch :  \n {}'.format(batch))
-        
-        #self.dataloader(meta_train_dataset)
-
         log = []
         for epoch in range(self.meta_iterations):
             if epoch % 20 == 0 : 
                 tmp_learner = MyLearner(self.meta_learner)
-                #tmp_learner.save(os.path.join('trained_models/feedback/maml_torch/models', 'epoch{}'.format(epoch)))
-            self.train(mtrain_iterator, self.meta_learner, self.device, self.meta_opt, epoch, log)
+            self.train(mtrain_iterator, self.meta_learner, self.device, 
+                self.meta_opt, epoch, log)
 
 
         return MyLearner(self.meta_learner)
@@ -201,26 +171,28 @@ class MyMetaLearner(MetaLearner):
     def train(self, db, net, device, meta_opt, epoch, log):
         net.train()
         #n_train_iter = db.x_train.shape[0] // db.batchsz
-        n_train_iter = 1
+        n_train_iter = 4
         for batch_idx in range(n_train_iter):
             start_time = time.time()
             # Sample a batch of support and query images and labels.
-            #x_spt, y_spt, x_qry, y_qry = db.next()
             batch = next(db)
             batch = batch[0]
             batch = self.process_task(batch)
-            x_spt, y_spt, x_qry, y_qry = [x.to(device=self.device) for x in batch]
+            x_spt, y_spt, x_qry, y_qry = [
+                x.to(device=self.device) for x in batch]
             
-            #task_num = self.meta_batch_size
             task_num, setsz, c_, h, w = x_spt.size()
-            logging.debug('Task num: {} | Setsz: {} | c_ : {} | h : {} | w : {}'.format(task_num, setsz, c_, h, w))
+            logging.debug('Task num: {} | Setsz: {} | c_ : {} | h : {} | w : {}'.format(
+                task_num, setsz, c_, h, w))
             querysz = x_qry.size(1)
 
-            logging.debug(f'sup_x : {x_spt[0].shape} | sup_y : {y_spt[0].shape} | qry_x : {x_qry[0].shape} | qry_y : {y_qry[0].shape}')
+            logging.debug(
+                f'sup_x : {x_spt[0].shape} | sup_y : {y_spt[0].shape} | qry_x : {x_qry[0].shape} | qry_y : {y_qry[0].shape}')
 
             # Initialize the inner optimizer to adapt the parameters to
             # the support set.
-            n_inner_iter = 5
+
+            n_inner_iter = 2 # This increases significantly the GPU load
             inner_opt = torch.optim.SGD(net.parameters(), lr=1e-1)
 
             qry_losses = []
@@ -282,8 +254,8 @@ class MyLearner(Learner):
     """
     def __init__(self, 
                 neural_net = None,
-                num_epochs=3,
-                lr=0.1,
+                num_epochs=5,
+                lr=1e-1,
                 img_size=128):
         """
         Args:
@@ -302,8 +274,7 @@ class MyLearner(Learner):
         else : 
             self.learner = neural_net
 
-        # Learning procedure parameters
-        self.optimizer = torch.optim.SGD(self.learner.parameters(), lr=1e-1) # inner opt
+        self.optimizer = torch.optim.SGD(self.learner.parameters(), lr=lr) # inner opt
         self.n_inner_iter = num_epochs
 
     def __call__(self, imgs):
@@ -315,7 +286,8 @@ class MyLearner(Learner):
         sup_imgs : [batch_idx, nbr_imgs, H, W, C]
         """
         to_torch_labels = lambda a: torch.from_numpy(a.numpy()).long()
-        to_torch_imgs = lambda a: torch.from_numpy(np.transpose(a.numpy(), (0, 3, 1, 2)))
+        to_torch_imgs = lambda a: torch.from_numpy(
+            np.transpose(a.numpy(), (0, 3, 1, 2)))
         return to_torch_imgs(images), to_torch_labels(labels)
 
     def fit(self, dataset_train):
@@ -331,7 +303,8 @@ class MyLearner(Learner):
         self.learner.train()
         for images, labels in dataset_train:
             images, labels = self.process_task(images, labels)
-            with higher.innerloop_ctx(self.learner, self.optimizer, track_higher_grads=False) as (fnet, diffopt):
+            with higher.innerloop_ctx(self.learner, self.optimizer, 
+                track_higher_grads=False) as (fnet, diffopt):
             # Optimize the likelihood of the support set by taking
             # gradient steps w.r.t. the model's parameters.
             # This adapts the model's meta-parameters to the task.
@@ -376,7 +349,6 @@ class MyLearner(Learner):
         torch.save(self.learner.state_dict(), ckpt_file)
 
         
-####### Predictor ########
 @gin.configurable
 class MyPredictor(Predictor):
     """ The predictor is meant to predict labels of the query examples at 
@@ -393,7 +365,8 @@ class MyPredictor(Predictor):
         self.learner = learner
 
     def process_imgs(self, images):
-        to_torch_imgs = lambda a: torch.from_numpy(np.transpose(a.numpy(), (0, 3, 1, 2)))
+        to_torch_imgs = lambda a: torch.from_numpy(
+            np.transpose(a.numpy(), (0, 3, 1, 2)))
         return to_torch_imgs(images)
 
     def predict(self, dataset_test):
@@ -420,9 +393,8 @@ class MyPredictor(Predictor):
         """
         self.learner.eval()
         for images in dataset_test:
-            #logging.info('Images shape : {}'.format(images))
+            logging.debug('Images shape : {}'.format(images))
             images = self.process_imgs(images[0])
-
             qry_logits = self.learner(images).detach()
         return qry_logits
 
