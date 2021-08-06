@@ -10,7 +10,7 @@
 
 # Data
 *metadl/starting_kit/data*
-*.zip
+*baselines/*.zip*
 */bundles/*
 *.tfrecords
 *dataset_spec.json
