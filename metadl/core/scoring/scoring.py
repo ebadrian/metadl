@@ -50,6 +50,8 @@ flags.DEFINE_string('evaltype',
 flags.DEFINE_integer('ingestion_time_budget',
                     7200,
                     'Data type on which to perform evaluation. [train, val, test]')
+flags.DEFINE_integer('query_size_per_class', 19, 
+    'Number of query example per episode at meta-test time.')
 
 tf.random.set_seed(1234)
 def NwayKshot_accuracy(predictions, ground_truth, metric):
@@ -110,7 +112,7 @@ def extract_elapsed_time(saved_model_dir):
         
     return -1
 
-def process_task(task):
+def process_task(task, query_size_per_class):
     """We are using the meta-dataset code to generate episodes from a dataset. 
     Generated episodes have a specific format. Each is processed such that the 
     the support and query sets are ready to be used by the participants. Each
@@ -149,8 +151,8 @@ def process_task(task):
             (supp_img, supp_labs))
         query_set = tf.data.Dataset.from_tensor_slices(\
             (que_img,))
-        support_set = support_set.batch(5)
-        query_set = query_set.batch(95)
+        support_set = support_set.batch(25)
+        query_set = query_set.batch(query_size_per_class * 5)
 
     return support_set, query_set, que_labs
 
@@ -273,6 +275,7 @@ def scoring(argv):
     meta_test_dir = FLAGS.meta_test_dir
     eval_type = FLAGS.evaltype
     ingestion_time_budget = FLAGS.ingestion_time_budget
+    query_size_per_class = FLAGS.query_size_per_class 
     
     # Making eval type compatible with DataGenerator specs
     if eval_type == 'train' or eval_type == 'val':
@@ -304,7 +307,6 @@ def scoring(argv):
 
     # Initialize detailed results page
     initialize_detailed_results_page(score_dir)
-
     ########################################
     # IMPORTANT: 
     # Wait until code_dir is created
@@ -323,7 +325,7 @@ def scoring(argv):
     logging.info('Creating the meta-test episode generator ... \n ')
     generator = DataGenerator(path_to_records=meta_test_dir,
                             batch_config=None,
-                            episode_config=[128, 5, 5, 19],
+                            episode_config=[128, 5, 5, query_size_per_class],
                             pool= data_generator_eval_type,
                             mode='episode')
     
@@ -356,8 +358,8 @@ def scoring(argv):
 
     nbr_episodes = 600
 
-    for k , task in enumerate(meta_test_dataset) :
-        support_set, query_set, ground_truth = process_task(task)
+    for k , task in enumerate(meta_test_dataset):
+        support_set, query_set, ground_truth = process_task(task, query_size_per_class)
         learner.load(saved_model_dir)
         predictor = learner.fit(support_set)
         predictions = predictor.predict(query_set)
