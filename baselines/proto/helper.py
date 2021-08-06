@@ -18,22 +18,22 @@ def conv_net(nbr_classes, img_size = 128):
      model.add(BatchNormalization())
      model.add(MaxPooling2D((2, 2)))
 
-     model.add(Conv2D(128, (3, 3), strides = (1, 1), activation='relu',
+     model.add(Conv2D(64, (3, 3), strides = (1, 1), activation='relu',
           kernel_initializer=GlorotUniform(seed=1234)))
      model.add(BatchNormalization())
      model.add(MaxPooling2D((2, 2)))
 
-     model.add(Conv2D(128, (3, 3), strides = (1, 1), activation='relu',
+     model.add(Conv2D(64, (3, 3), strides = (1, 1), activation='relu',
           kernel_initializer=GlorotUniform(seed=1234)))
      model.add(BatchNormalization())
      model.add(MaxPooling2D((2, 2)))
 
-     model.add(Conv2D(128, (3, 3), strides = (1, 1), activation='relu',
+     model.add(Conv2D(64, (3, 3), strides = (1, 1), activation='relu',
           kernel_initializer=GlorotUniform(seed=1234)))
      model.add(BatchNormalization())
      model.add(MaxPooling2D((2, 2)))
 
-     model.add(Conv2D(128, (3, 3), strides = (1, 1), activation='relu',
+     model.add(Conv2D(64, (3, 3), strides = (1, 1), activation='relu',
           kernel_initializer=GlorotUniform(seed=1234)))
      model.add(BatchNormalization())
      model.add(MaxPooling2D((2, 2)))

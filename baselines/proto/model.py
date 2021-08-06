@@ -216,8 +216,8 @@ class MyMetaLearner(MetaLearner):
 
                 if count % 50 == 0:
                     self.evaluate(MyLearner(N_ways= 5,
-                                            K_shots=1,
-                                            img_size=28,
+                                            K_shots=5,
+                                            img_size=128,
                                             embedding_dimension=self.embedding_dim,
                                             embedding_fn =self.embedding_fn),
                                 meta_valid_dataset)
@@ -272,7 +272,7 @@ class MyLearner(Learner):
                 N_ways,
                 K_shots,
                 img_size,
-                embedding_dimension = 64,
+                embedding_dimension = 256,
                 embedding_fn=None):
         """ If no embedding function is provided, we create a neural network
         with randomly initialized weights.
@@ -383,8 +383,8 @@ class MyPredictor(Predictor):
             probs: Probability distribution over N_ways classes for each
                 image in images.
         """ 
-        batch_size = 95
         projected_images = self.embedding_fn(images)
+        batch_size = projected_images.shape[0]
         embedding_dim = projected_images.shape[1]
         broadcast_projections = tf.broadcast_to(tf.expand_dims(
                                     projected_images, axis = 1),

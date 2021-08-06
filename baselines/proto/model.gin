@@ -1,12 +1,12 @@
 # MetaLearner parameters
 MyMetaLearner.img_size = 128
 MyMetaLearner.N_ways = 20
-MyMetaLearner.K_shots = 1
-MyMetaLearner.embedding_dim = 512 
-MyMetaLearner.meta_iterations = 550
+MyMetaLearner.K_shots = 5
+MyMetaLearner.embedding_dim = 256
+MyMetaLearner.meta_iterations = 10
 
 # Learner parameters
 MyLearner.N_ways = 5
-MyLearner.K_shots = 1
+MyLearner.K_shots = 5
 MyLearner.img_size = 128
-MyLearner.embedding_dimension = 512
+MyLearner.embedding_dimension = 256
