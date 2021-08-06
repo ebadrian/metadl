@@ -1,5 +1,5 @@
-DataGenerator.batch_config = [71, 200] # [batch_size, image_size]
-DataGenerator.episode_config = [28, 5, 1, 5] # Not used 
-DataGenerator.valid_episode_config = [71, 5, 1, 19]
+DataGenerator.batch_config = [71, 200] # [image_size, batch_size]
+DataGenerator.episode_config = [71, 5, 5, 15] # Not used 
+DataGenerator.valid_episode_config = [71, 5, 5, 15]
 DataGenerator.pool = 'train'
 DataGenerator.mode = 'batch'
