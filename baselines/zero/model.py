@@ -105,6 +105,7 @@ class MyPredictor(Predictor):
         Note : In the challenge N_ways = 5 at meta-test time.
         """
         dummy_pred = tf.constant([[1.0, 0, 0, 0 ,0]], dtype=tf.float32)
-        dummy_pred = tf.broadcast_to(dummy_pred, (95, 5))
+        for image in dataset_test:
+            dummy_pred = tf.broadcast_to(dummy_pred, (len(image[0]), 5))
         return dummy_pred
 
