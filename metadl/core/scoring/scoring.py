@@ -249,9 +249,9 @@ def set_device():
         str: device identifier which is best suited 
             (most free GPU, or CPU in case GPUs are unavailable)
     """
-    gpus = tf.config.list_physical_devices(device_type="GPU")
     dev = None
     try:
+      gpus = tf.config.list_physical_devices(device_type="GPU")
       if gpus is not None:
         current_device = gpus[-1].name[-1]
         dev = f"GPU:{current_device}"

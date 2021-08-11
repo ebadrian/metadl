@@ -47,10 +47,11 @@ flags.DEFINE_boolean('debug_mode',
 
 tf.random.set_seed(1234)
 gpus = tf.config.experimental.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(gpus[0], True)
-tf.config.experimental.set_memory_growth(gpus[1], True)
-tf.config.experimental.set_memory_growth(gpus[2], True)
-tf.config.experimental.set_memory_growth(gpus[3], True)
+for gpu_id, _ in enumerate(gpus):
+    tf.config.experimental.set_memory_growth(gpus[gpu_id], True)
+#tf.config.experimental.set_memory_growth(gpus[1], True)
+#tf.config.experimental.set_memory_growth(gpus[2], True)
+#tf.config.experimental.set_memory_growth(gpus[3], True)
 
 def get_gin_path():
     """ Get the absolute path of a gin file in a compute_worker. This method is 
