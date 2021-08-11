@@ -105,6 +105,7 @@ class MyPredictor(Predictor):
         i.e. taking the argmax of the row inputs, both forms are valid.
         Note : In the challenge N_ways = 5 at meta-test time.
         """
-        random_pred = np.random.rand(95, 5)
+        for image in dataset_test:
+            random_pred = np.random.rand(len(image[0]), 5)
         return random_pred
 
