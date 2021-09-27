@@ -20,11 +20,12 @@ class MyMetaLearner(MetaLearner):
     def __init__(self,
                 iterations=10,
                 freeze_base=True,
-                total_meta_train_class=883):
+                **kwargs):
         super().__init__()
         self.iterations = iterations
         self.freeze_base = freeze_base
-        self.total_meta_train_class = total_meta_train_class
+        ##### GET train split number of classes #####
+        self.total_meta_train_class = kwargs["nbr_classes"]
 
         self.base_model = keras.applications.Xception(
             weights='imagenet',

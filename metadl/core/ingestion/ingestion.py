@@ -11,10 +11,19 @@ Usage example for a local run (root : metadl/):
             --meta_train_dir=../omniglot/meta_train \ 
             --code_dir=./baselines/zero/
 
+
+BATCH MODE OPTION:
+- Make sure you add **kwarg to the MyMetaLearner's __init__() method.
+- Then you can access the key "nbr_classes" in kwarg, this allows you to use 
+batch mode regardless of the meta-dataset you are working with. That is, it will
+get the right number of classes available in the train split.
+
 """
 import os 
+import json
 import shutil
 from sys import path
+
 
 import gin
 from absl import app
@@ -102,6 +111,24 @@ def show_dir(d, n_bytes=100, depth=1):
         if depth > 1 and os.path.isdir(filepath):
             show_dir(filepath, n_bytes=n_bytes, depth=depth-1)
 
+def parse_dataset_spec(path_to_dataset_spec):
+    """Returns a dictionnary with information about the current meta-dataset. This 
+    is useful if a participants is using a NN architecture that depends on the 
+    number of classes in the train split of the meta-dataset. (e.g. batch training).
+    """
+    with open(path_to_dataset_spec, "r") as fp:
+        data = json.load(fp)
+    
+    classes_nbr = {"TRAIN": data["classes_per_split"]["TRAIN"], 
+                "VALID": data["classes_per_split"]["VALID"], 
+                "TEST": data["classes_per_split"]["TEST"]}
+    
+    examples_per_class = {"MIN": min(list(data["images_per_class"].values())), 
+                        "MAX": max(list(data["images_per_class"].values()))}
+    name = data["path"].split("/")[-1] # File name
+
+    return (name, classes_nbr, examples_per_class)
+
 
 def ingestion(argv):
     """The ingestion process achieves 2 things. First, it uses the meta-fit() 
@@ -139,11 +166,11 @@ def ingestion(argv):
     path.append(code_dir)
     try:
         from model import MyMetaLearner 
-
+        
         # Loading model.gin parameters if specified
         if(os.path.exists(os.path.join(code_dir, 'model.gin'))):
             gin.parse_config_file(os.path.join(code_dir, 'model.gin'))
-
+        
         # Loading data generation config.gin if specified
         if(os.path.exists(os.path.join(code_dir, 'config.gin'))):
             gin.parse_config_file(os.path.join(code_dir, 'config.gin'))
@@ -155,10 +182,18 @@ def ingestion(argv):
         logging.info('Creating the episode generator ...')
         # Creating DataGenerator with default params or loaded from config.gin
         generator = DataGenerator(path_to_records=meta_train_dir)  
-
         logging.info('Generator created !')
         logging.info("#"*50)
-        meta_learner = MyMetaLearner()
+
+        # Extract number of classes in TRAIN if needed -> batch mode
+        if generator.mode == "batch":
+            meta_dataset_info = parse_dataset_spec(
+            os.path.join(meta_train_dir, "dataset_spec.json"))
+            metadata_dict = {"nbr_classes": meta_dataset_info[1]["TRAIN"]}
+            meta_learner = MyMetaLearner(**metadata_dict)    
+        else: 
+            meta_learner = MyMetaLearner()
+
         logging.info('Starting meta-fit ... \n')
         learner = meta_learner.meta_fit(generator)
         logging.info('Meta-fit done.')
